@@ -1,0 +1,8 @@
+---
+title: Estoria - Event Sourcing for Go
+toc: true
+---
+
+{{< cards >}}
+  {{< card link="docs" title="Docs" icon="book-open" >}}
+{{< /cards >}}
