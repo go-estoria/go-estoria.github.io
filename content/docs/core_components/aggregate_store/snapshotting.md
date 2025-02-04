@@ -5,11 +5,11 @@ prev: docs/core_components/outbox/
 weight: 220
 ---
 
-The **snapshotting store** wraps an existing aggrergate store and provides snapshotting capabilities.
+A snapshotting aggregate store wraps an existing aggregate store and provides snapshotting capabilities.
 
-Snapshotting is a method by which periodic shapshots of an aggregate's state are captured and saved so that subsequent loading of the aggregate can start off preloaded state, subsequently loading only the events that were appended after the snapshotted version.
+Snapshotting is a method by which periodic shapshots of an aggregate's state are captured and saved so that subsequent hydration of the aggregate can start from preloaded state, loading and applying only the events that were appended after the snapshotted version.
 
-Snapshotting is typically used for decreasing load-time latency for aggregates.
+Aggregate snapshotting decreases load-time latency for aggregates be reducing the number of events that must be loaded from an event store, thus improving database performance.
 
 >TODO: add flow diagram
 
@@ -18,8 +18,25 @@ Snapshotting is typically used for decreasing load-time latency for aggregates.
 A snapshotting aggregate store requires an inner aggregate store (to defer to when hydrating aggregates) and a snapshot store (to load and save snapshots).
 
 ```go
-// wrap an existing aggregate store with snapshotting capabilitiies
-snapshottingStore, _ := aggregatestore.NewSnapshottingStore(store, snapshotter)
+import (
+    "context"
+    "github.com/go-estoria/estoria/aggregatestore"
+	"github.com/go-estoria/estoria/snapshotstore/memory"
+)
+
+func main() {
+	// create an aggregate store
+	store, _ := aggregatestore.NewEventSourcedStore(eventStore, NewThing)
+
+    // create a snapshot store
+	snapshotStore := memory.NewSnapshotStore()
+
+	// create a snapshot policy that determines when to capture snapshots
+	snapshotPolicy := snapshotstore.EventCountSnapshotPolicy{N: 3}
+
+	// wrap an aggregate store with snapshotting capabilities
+	store, _ = aggregatestore.NewSnapshottingStore(store, snapshotStore, snapshotPolicy)
+}
 ```
 
 ## Components

@@ -30,7 +30,7 @@ For example, a `User` in an authentication service:
 
 ```go
 type User struct {
-	ID uuid.UUID
+	ID   uuid.UUID
 	Name string
 }
 ```
@@ -39,16 +39,14 @@ Or an `Order` in an order-processing system:
 
 ```go
 type Order struct {
-	ID uuid.UUID
+	ID         uuid.UUID
 	CustomerID uuid.UUID
-	Status string
-	UpdatedAt time.Time
+	Status     string
+	UpdatedAt  time.Time
 }
 ```
 
-The current state of an entity is represented by the values that comprise it at any given point in time.
-
-### Aggregate
+### Aggregates
 
 An aggregate is a group of domain objects that is treated as a single unit, and the aggregate _root_ is the entity through which all operations on the aggregate must take place.
 
@@ -64,4 +62,4 @@ Estoria provides a core event-sourced aggregate store that uses an underlying ev
 
 An event store is a component that can save and load events.
 
-Estoria provides officially-supported event store implementations for a variety of storage backends from AWS, Azure, and Google Cloud.
+Estoria provides [officially-supported event store implementations](../component_library/#event-store-implementations) for a variety of storage backends from AWS, Azure, and Google Cloud.
