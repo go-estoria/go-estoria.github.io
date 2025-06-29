@@ -1,7 +1,7 @@
 ---
 title: In-Memory Event Store
 type: docs
-prev: docs/core_components/aggregate_store/
+prev: docs/components/aggregate_store/
 weight: 120
 ---
 

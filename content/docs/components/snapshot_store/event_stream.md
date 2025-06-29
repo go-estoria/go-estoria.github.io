@@ -1,7 +1,7 @@
 ---
 title: Event Stream
 type: docs
-prev: docs/core_components/
+prev: docs/components/
 weight: 280
 ---
 

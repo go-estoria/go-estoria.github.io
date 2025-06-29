@@ -1,13 +1,13 @@
 ---
 title: Event-Sourced Aggregate Store
 type: docs
-prev: docs/core_components/
+prev: docs/components/
 weight: 220
 ---
 
 The event-sourced aggregate store loads and saves aggregates using an event store.
 
-Aggregates are hydrated by streaming events from an event store and replaying them onto an aggregate root to reconstruct its state. Changes to aggregates are saved by appending events to the event store representing incremental state changes.
+Aggregates are hydrated by streaming events from an event store and applying them to an aggregate's root entity to reconstruct its state. Changes to aggregates are saved by appending events to the event store representing incremental state changes.
 
 This functionality -- the loading and saving of aggregates using event streams -- is central to event-sourcing using Estoria.
 
@@ -44,7 +44,15 @@ func main() {
 
 ## API Overview
 
-### Creating New Aggregates
+### Creating an Event Sourced Aggregate Store
+
+Creating a new event sourced aggregate store requires two things:
+- an **event store**, so that it can save and load events for the aggregate;
+- an **entity factory function**, so that it can create new instances of the aggregate's root entity type.
+
+Each aggregate store works specifically with a single aggregate type. Applications working with multiple aggregates should create aggregate stores for each aggregate type.
+
+### Creating a New Aggregate
 
 The `New()` method creates a new aggregate with a default version of 0 (no applied events) and a default root entity using the configured entity factory function.
 

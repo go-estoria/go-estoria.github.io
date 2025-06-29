@@ -1,7 +1,7 @@
 ---
 title: Snapshotting Aggregate Store
 type: docs
-prev: docs/core_components/outbox/
+prev: docs/components/outbox/
 weight: 220
 ---
 
@@ -35,9 +35,13 @@ func main() {
 	snapshotPolicy := snapshotstore.EventCountSnapshotPolicy{N: 3}
 
 	// wrap an aggregate store with snapshotting capabilities
-	store, _ = aggregatestore.NewSnapshottingStore(store, snapshotStore, snapshotPolicy)
+	snapshottingStore, _ := aggregatestore.NewSnapshottingStore(store, snapshotStore, snapshotPolicy)
 }
 ```
+
+## Snapshot Stores
+
+While the snapshotting aggregate store is a core Estoria component, it relies on an snapshot store implementation to provide the actual snapshotting functionality. See [Snapshot Store Implementations](../../../component_library/#snapshot-store-implementations) in the component library for more information on available snapshot store implementations.
 
 ## Components
 
