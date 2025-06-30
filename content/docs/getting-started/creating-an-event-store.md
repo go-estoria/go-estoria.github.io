@@ -1,8 +1,8 @@
 ---
 title: Creating An Event store
 type: docs
-prev: getting_started/defining_events
-next: getting_started/creating_an_aggregate_store
+prev: getting-started/defining-events
+next: getting-started/creating-an-aggregate-store
 weight: 123
 ---
 

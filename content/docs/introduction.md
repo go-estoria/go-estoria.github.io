@@ -59,4 +59,4 @@ Estoria provides [officially-supported event store implementations](../component
 
 ## Getting Started
 
-See the [Getting Started](../getting_started) guide to learn how to use Estoria in your Go project.
+See the [Getting Started](../getting-started) guide to learn how to use Estoria in your Go project.

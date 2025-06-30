@@ -1,14 +1,14 @@
 ---
 title: Aggregate Store
 type: docs
-prev: docs/getting_started/
+prev: docs/getting-started/
 next: docs/components/aggregate_store
 sidebar:
   open: true
 weight: 210
 ---
 
-An aggregate store loads, hydrates, and saves aggregates. It is a generic component that requires an entity type as a type parameter:
+An **aggregate store** loads, hydrates, and saves aggregates. It is a generic component that requires an entity type as a type parameter:
 
 ```go
 type AggregateStore[E estoria.Entity] interface {...}

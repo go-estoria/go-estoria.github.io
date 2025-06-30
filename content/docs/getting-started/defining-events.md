@@ -1,8 +1,8 @@
 ---
 title: Defining Events
 type: docs
-prev: getting_started/defining_entities
-next: getting_started/creating_an_event_store
+prev: getting-started/defining-entities
+next: getting-started/creating-an-event-store
 weight: 122
 ---
 

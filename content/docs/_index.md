@@ -1,5 +1,5 @@
 ---
 title: Documentation
-next: getting_started
+next: getting-started
 ---
 

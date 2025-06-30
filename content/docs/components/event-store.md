@@ -1,7 +1,7 @@
 ---
 title: Event Store
 type: docs
-prev: docs/getting_started/
+prev: docs/getting-started/
 next: docs/components/aggregate_store
 sidebar:
   open: true
@@ -16,9 +16,9 @@ An **event stream** is a uniquely-identified, ordered collection of events.
 
 In an event-sourced system, the event store forms the foundation of the persistence layer. By maintaining a an append-only record of all changes to entities, it stores the complete history of their state over time.
 
-## Overview
+## Event Store Implementations
 
-Anything implementing the following interface can be used as an event store with Estoria:
+Select an event store from [Event Store Implementations](../../component_library/#event-store-implementations) in the component library, or build your own. Anything implementing the following interface can be used as an event store with Estoria:
 
 ```go
 import (
@@ -28,15 +28,6 @@ import (
 
 interface {
     AppendStream(context.Context, typeid.UUID, []*eventstore.WritableEvent, eventstore.AppendStreamOptions) error
-
     ReadStream(context.Context, typeid.UUID, eventstore.ReadStreamOptions) (eventstore.StreamIterator, error)
 }
 ```
-
-## Event Store Implementations
-
-See [Event Store Implementations](../../component_library/#event-store-implementations) in the component library for more information on available event store implementations.
-
-## Appending Events
-
-## Reading Events

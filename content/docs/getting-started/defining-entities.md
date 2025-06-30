@@ -1,8 +1,8 @@
 ---
 title: Defining Entities
 type: docs
-prev: getting_started
-next: getting_started/defining_events
+prev: getting-started
+next: getting-started/defining-events
 weight: 121
 ---
 

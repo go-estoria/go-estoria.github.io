@@ -1,8 +1,8 @@
 ---
 title: Working with Aggregates
 type: docs
-prev: /getting_started/creating_an_aggregate_store
-next: getting_started/next_steps
+prev: getting-started/creating-an-aggregate-store
+next: getting-started/next-steps
 weight: 125
 ---
 
