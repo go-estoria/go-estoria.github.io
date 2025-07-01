@@ -21,11 +21,11 @@ menu:
     - name: Documentation
       pageRef: /docs
       weight: 1
+    - name: Component Library
+      pageRef: /component-library
+      weight: 2
     - name: Examples
       pageRef: /examples
-      weight: 2
-    - name: Component Library
-      pageRef: /docs/component_library
       weight: 3
     # - name: Contact ↗
     #   url: "https://github.com/imfing"

@@ -1,7 +1,6 @@
 ---
 title: Hookable Aggregate Store
 type: docs
-prev: docs/components/event_store/
 weight: 240
 ---
 

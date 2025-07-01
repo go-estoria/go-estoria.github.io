@@ -18,7 +18,7 @@ In an event-sourced system, the event store forms the foundation of the persiste
 
 ## Event Store Implementations
 
-Select an event store from [Event Store Implementations](../../component_library/#event-store-implementations) in the component library, or build your own. Anything implementing the following interface can be used as an event store with Estoria:
+Select an event store from [Event Store Implementations](../../component-library/#event-store-implementations) in the component library, or build your own. Anything implementing the following interface can be used as an event store with Estoria:
 
 ```go
 import (

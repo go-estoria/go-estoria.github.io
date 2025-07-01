@@ -1,7 +1,6 @@
 ---
 title: Event-Sourced Aggregate Store
 type: docs
-prev: docs/components/
 weight: 220
 ---
 

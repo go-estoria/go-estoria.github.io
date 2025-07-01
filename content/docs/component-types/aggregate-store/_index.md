@@ -1,10 +1,8 @@
 ---
 title: Aggregate Store
 type: docs
-prev: docs/getting-started/
-next: docs/components/aggregate_store
 sidebar:
-  open: true
+  open: false
 weight: 210
 ---
 

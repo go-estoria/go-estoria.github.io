@@ -1,7 +1,6 @@
 ---
 title: Cached Aggregate Store
 type: docs
-prev: docs/components/aggregate_store/
 weight: 230
 ---
 
@@ -34,7 +33,7 @@ func main() {
 
 ## Aggregate Caches
 
-While the cached aggregate store is a core Estoria component, it relies on an aggregate cache implementation to provide the actual caching functionality. See [Aggregate Cache Implementations](../../../component_library/#aggregate-cache-implementations) in the component library for more information on available aggregate cache implementations.
+While the cached aggregate store is a core Estoria component, it relies on an aggregate cache implementation to provide the actual caching functionality. See [Aggregate Cache Implementations](../../../component-library/#aggregate-cache-implementations) in the component library for more information on available aggregate cache implementations.
 
 ## Custom Cache Implementations
 

@@ -1,8 +1,5 @@
 ---
 title: Component Library
-type: docs
-prev: docs/event_sourcing_concepts/outbox
-weight: 400
 ---
 
 ## Event Store Implementations

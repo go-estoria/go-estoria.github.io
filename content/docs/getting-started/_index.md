@@ -2,7 +2,7 @@
 title: Getting Started
 type: docs
 prev: docs/introduction
-next: getting-started/defining-entities
+next: docs/getting-started/defining-entities
 weight: 120
 ---
 

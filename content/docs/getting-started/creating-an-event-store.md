@@ -1,5 +1,5 @@
 ---
-title: Creating An Event store
+title: Creating An Event Store
 type: docs
 prev: getting-started/defining-events
 next: getting-started/creating-an-aggregate-store
