@@ -58,7 +58,7 @@ The snapshot store communicates with a storage backend and is responsible for th
 
 ## Options
 
-### Using a Custom Snapshot Marshaler
+### Custom Snapshot Marshaler
 
 By default, the snapshotting aggregate store marshals snapshot data as JSON. You can override this behavior by providing an alternative snapshot marshaler using `WithSnapshotMarshaler()`.
 
@@ -74,7 +74,7 @@ snapshottingStore, err := aggregatestore.NewSnapshottingReader(innerStore, snaps
 	aggregatestore.WithSnapshotMarshaler(CustomSnapshotMarshaler{}))
 ```
 
-### Using a Custom Snapshot Reader
+### Custom Snapshot Reader
 
 By default, the snapshot store provided when creating the snapshotting aggregate store will be used for reading snapshots. You can override this behavior by providing an alternative snapshot reader using `WithSnapshotReader()`.
 
@@ -91,7 +91,7 @@ snapshottingStore, err := aggregatestore.NewSnapshottingReader(innerStore, snaps
 	aggregatestore.WithSnapshotReader(CustomSnapshotReader{}))
 ```
 
-### Using a Custom Snapshot Writer
+### Custom Snapshot Writer
 
 By default, the snapshot store provided when creating the snapshotting aggregate store will be used for writing snapshots. You can override this behavior by providing an alternative snapshot writer using `WithSnapshotWriter()`.
 
