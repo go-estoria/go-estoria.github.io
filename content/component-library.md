@@ -10,7 +10,7 @@ title: Component Library
 | Azure Cosmos DB | TBD | TBD |
 | GCP Firestore | TBD | TBD |
 | GCP Spanner | TBD | TBD |
-| EventStoreDB | [EventStoreDB SDK](github.com/EventStore/EventStore-Client-Go) | No |
+| KurrentDB | [EventStoreDB SDK](github.com/kurrent-io/KurrentDB-Client-Go) | No |
 | MongoDB | [MongoDB](https://github.com/mongodb/mongo-go-driver) | Yes |
 | SQL (agnostic) | `database/sql` (stdlib) | Yes |
 

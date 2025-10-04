@@ -83,7 +83,7 @@ import "github.com/go-estoria/estoria/aggregatestore"
 
 type CustomSnapshotReader struct{}
 
-func (CustomSnapshotReader) ReadSnapshot(ctx context.Context, aggregateID typeid.UUID, opts snapshotstore.ReadSnapshotOptions) (*snapshotstore.AggregateSnapshot, error) {
+func (CustomSnapshotReader) ReadSnapshot(ctx context.Context, aggregateID typeid.ID, opts snapshotstore.ReadSnapshotOptions) (*snapshotstore.AggregateSnapshot, error) {
 	return nil, errors.New("todo: implement custom snapshot reader")
 }
 
@@ -100,7 +100,7 @@ import "github.com/go-estoria/estoria/aggregatestore"
 
 type CustomSnapshotWriter struct{}
 
-func (CustomSnapshotWriter) ReadSnapshot(ctx context.Context, aggregateID typeid.UUID) (*aggregatestore.Snapshot, error) {
+func (CustomSnapshotWriter) ReadSnapshot(ctx context.Context, aggregateID typeid.ID) (*aggregatestore.Snapshot, error) {
 	return nil, errors.New("todo: implement custom snapshot writer")
 }
 

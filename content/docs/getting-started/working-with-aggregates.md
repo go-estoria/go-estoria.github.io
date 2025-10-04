@@ -10,12 +10,12 @@ Now that we have our aggregate store, we can begin working with aggregates in ou
 
 ### Creating Aggregates and Appending Events
 
-Create a new aggregate with `NewAggregate()`:
+Create a new aggregate with `New()`:
 
 ```go
 userID := uuid.Must(uuid.NewV4())
 
-newUser := aggregatestore.NewAggregate(NewUser(userID), 0)
+newUser := aggregatestore.New(NewUser(userID), 0)
 
 fmt.Println("created new user:", newUser.Entity().Name)
 ```

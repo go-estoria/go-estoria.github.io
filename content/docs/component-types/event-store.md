@@ -8,11 +8,11 @@ sidebar:
 weight: 110
 ---
 
-An **event store** loads and stores events using event streams.
-
 An **event** is something that has occurred in the past, often with associated information.
 
-An **event stream** is a uniquely-identified, ordered collection of events.
+An **event stream** is a uniquely-identified, ordered sequence of events.
+
+An **event store** reads events from and appends events to event streams.
 
 In an event-sourced system, the event store forms the foundation of the persistence layer. By maintaining a an append-only record of all changes to entities, it stores the complete history of their state over time.
 
@@ -27,7 +27,7 @@ import (
 )
 
 interface {
-    AppendStream(context.Context, typeid.UUID, []*eventstore.WritableEvent, eventstore.AppendStreamOptions) error
-    ReadStream(context.Context, typeid.UUID, eventstore.ReadStreamOptions) (eventstore.StreamIterator, error)
+    AppendStream(context.Context, typeid.ID, []*eventstore.WritableEvent, eventstore.AppendStreamOptions) error
+    ReadStream(context.Context, typeid.ID, eventstore.ReadStreamOptions) (eventstore.StreamIterator, error)
 }
 ```

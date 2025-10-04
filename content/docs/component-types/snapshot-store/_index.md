@@ -8,9 +8,11 @@ sidebar:
 weight: 260
 ---
 
-A snapshot store loads and saves snapshots of aggregates.
+A s**napshot** is a captured representation of an aggregate's state at a specific point in time. It consists of the aggregate's ID, current version, and serialized entity state.
 
-A snapshot consists of the aggregate's ID, current version, and serialized entity state. The [snapshotting aggregate store](../aggregate-store/snapshotting) uses a snapshot store to reduce the number of events that need to be loaded and replayed when hydrating an aggregate.
+A **snapshot store** loads and saves snapshots.
+
+The [snapshotting aggregate store](../aggregate-store/snapshotting) uses a snapshot store to reduce the number of events that need to be loaded and replayed when hydrating an aggregate.
 
 ## Implementations
 

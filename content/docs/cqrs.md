@@ -1,8 +1,8 @@
 ---
 title: CQRS
 type: docs
-prev: /docs/event_sourcing_concepts/outbox/
-weight: 500
+prev: docs/component-types
+weight: 800
 ---
 
 CQRS stands for Command Query Responsibility Segregation. Simply put, it is an architectural pattern that involves separating the read concerns from the write concerns of a system. This separation allows for each side to be scaled and optimized independently. This may sometimes require dependent systems to be tolerant of eventual consistency.
@@ -67,13 +67,13 @@ func (a *Application) GetAccountSummary(r *http.Request, w *http.ResponseWriter)
     accountID := uuid.MustParse(r.URL.Query().Get("account_id"))
 
     // a.events is an event store containing Account events
-    iter, _ := a.events.ReadStream(ctx, typeid.FromUUID("account", accountID)), eventstore.ReadStreamOptions{})
+    iter, _ := a.events.ReadStream(ctx, typeid.New("account", accountID)), eventstore.ReadStreamOptions{})
 
     projection, _ := projection.New(iter)
 
     account := &AccountView{}
     projection.Project(func(_ context.Context, event *eventstore.Event) {
-        switch e := event.ID.TypeName() {
+        switch e := event.ID.Type {
         case "balancechanged":
             account.Balance += e.Amount
             account.LastUpdated = event.Timestamp

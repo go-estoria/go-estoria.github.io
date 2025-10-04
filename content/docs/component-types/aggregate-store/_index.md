@@ -6,6 +6,8 @@ sidebar:
 weight: 210
 ---
 
+An **aggregate** is a cluster of domain objects that can be treated as a single unit. The aggregate's root entity is the entrypoint through which we interact with and manage the state and behavior of all related objects.
+
 An **aggregate store** loads, hydrates, and saves aggregates. It is a generic component that requires an entity type as a type parameter:
 
 ```go
@@ -47,7 +49,7 @@ import (
 
 type AggregateStore[E estoria.Entity] interface {
     New(id uuid.UUID) (*aggregatestore.Aggregate[E], error)
-    Load(context.Context, typeid.UUID, aggregatestore.LoadOptions) (*Aggregate[E], error)
+    Load(context.Context, typeid.ID, aggregatestore.LoadOptions) (*Aggregate[E], error)
     Hydrate(context.Context, *aggregatestore.Aggregate[E], aggregatestore.HydrateOptions) error
     Save(context.Context, *aggregatestore.Aggregate[E], aggregatestore.SaveOptions) error
 }

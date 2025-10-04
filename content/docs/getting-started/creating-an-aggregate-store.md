@@ -6,13 +6,19 @@ next: getting-started/working-with-aggregates
 weight: 124
 ---
 
-An aggregate store persists aggregates by using an underlying event store to load and save events. Each aggregate store works with a single aggregate type.
+The **aggregate store** persists aggregates by using an underlying event store to load and save events. An aggregate store works with a single aggregate type.
 
-Let's create a new aggregate store for Users:
+Let's create a new aggregate store for Users in our application:
 
 ```go
-aggregateStore, err = aggregatestore.NewEventSourcedStore(eventStore, NewUser,
+import (
+    "log"
+    "github.com/go-estoria/estoria/aggregatestore"
+)
+
+aggregateStore, err = aggregatestore.New(eventStore, NewUser,
     aggregatestore.WithEventTypes(
+        UserCreatedEvent{},
         UserNameChangedEvent{},
     ),
 )
