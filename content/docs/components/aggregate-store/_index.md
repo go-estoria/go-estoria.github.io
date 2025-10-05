@@ -6,7 +6,7 @@ sidebar:
 weight: 210
 ---
 
-An **aggregate** is a cluster of domain objects that can be treated as a single unit. The aggregate's root entity is the entrypoint through which we interact with and manage the state and behavior of all related objects.
+An **aggregate** is a group of domain objects that is treated as a single unit. The aggregate's _root_ entity is the entrypoint through which we interact with and manage the state and behavior of all related objects.
 
 An **aggregate store** loads, hydrates, and saves aggregates. It is a generic component that requires an entity type as a type parameter:
 
@@ -20,7 +20,7 @@ This enables it to instantiate new entities and events that are applicable to th
 
 ### Event-Sourced Aggregate Store
 
-The [event-sourced aggregate](./event_sourced) store loads and saves aggregates using an event store.
+The [event-sourced aggregate store](./event-sourced) loads and saves aggregates using an event store.
 
 This functionality – the loading and saving of aggregates via event streams – is central to event sourcing using Estoria.
 

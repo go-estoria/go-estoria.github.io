@@ -10,7 +10,7 @@ A **projection** is a read model that is built by processing a stream of events.
 
 ## Creating Projections
 
-To project an event stream, simply obtain an event stream iterator from your event store and create a new projection. Then, provide an event handler function that will be called for each event in the stream. The event handler function then update the projection's state based on the event data.
+To project an event stream, simply obtain an event stream iterator from your event store and create a new projection. Then, provide an event handler function that will be called for each event in the stream. The event handler function then updates the projection's state based on the event data.
 
 ```go
 import (
@@ -27,7 +27,7 @@ proj, _ := projection.New(iter)
 
 // run the projection
 _, err = proj.Project(ctx, projection.EventHandlerFunc(func(ctx context.Context, evt *eventstore.Event) error {
-    // handle the event
+    // handle each event
 }))
 ```
 
