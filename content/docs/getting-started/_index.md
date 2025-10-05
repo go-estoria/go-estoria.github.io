@@ -54,7 +54,7 @@ func (e UserNameChanged) ApplyTo(_ context.Context, user User) (User, error) {
 }
 ```
 
-## Aggregates
+### Aggregates
 
 Create an event store to store events. Then create an aggregate store using the event store, your entity factory func, and your event types:
 
