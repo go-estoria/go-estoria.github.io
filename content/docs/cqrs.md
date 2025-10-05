@@ -1,8 +1,8 @@
 ---
 title: CQRS
 type: docs
-prev: docs/component-types
-weight: 800
+prev: docs/telemetry/
+weight: 820
 ---
 
 CQRS stands for Command Query Responsibility Segregation. Simply put, it is an architectural pattern that involves separating the read concerns from the write concerns of a system. This separation allows for each side to be scaled and optimized independently. This may sometimes require dependent systems to be tolerant of eventual consistency.
@@ -89,15 +89,3 @@ However, this approach can become unwieldy as the number of events grows. In tha
 #### Dedicated Read Model
 
 If your aggregates are comprised of many events, or if you need to query the data in a different way, you may want to build a dedicated read model. Rather than projecting an in-memory view when a query is made, you instead project events to a database. This database is often entirely separate from the database that backs the event store and is optimized for queries (reads) rather than writes.
-
-## Busses
-
-### Command Bus
-
-A command bus is a mechanism for routing commands to the appropriate command handler. It may act as a queue, performing common tasks such as deduplication, retries, and logging. A command bus also decouples the sender of the command from the handler of the command, facilitating horizontal scaling.
-
-### Event Bus
-
-An event bus is a mechanism for routing events to one or more event handlers. Since events represent things that have already happened, an event bus can be used to update read models, send notifications, or perform other side effects.
-
-While Estoria does not provide any event bus components, many event store implementations do support the concept of an outbox, which can be used to guarantee in-order, at-least-once delivery of events to an external system. For example, you may wish to publish an event to a message broker or update a read model in a separate database.
