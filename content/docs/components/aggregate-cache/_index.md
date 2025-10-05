@@ -2,7 +2,7 @@
 title: Aggregate Cache
 type: docs
 prev: docs/components/snapshot-store/
-next: cqrs/
+next: docs/projections/
 sidebar:
   open: false
 weight: 270

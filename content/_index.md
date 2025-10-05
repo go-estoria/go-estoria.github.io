@@ -11,7 +11,7 @@ Event sourcing is useful for any application that wishes to capture not just the
 
 {{< cards >}}
   {{< card link="/docs/getting-started" title="Getting Started" icon="sun" >}}
-  {{< card link="/docs/component-types" title="Documentation" icon="book-open" >}}
+  {{< card link="/docs" title="Documentation" icon="book-open" >}}
   {{< card link="https://github.com/go-estoria/estoria-examples" title="Examples" icon="clipboard" >}}
   {{< card link="component-library" title="Component Library" icon="cog" >}}
   {{< card link="https://pkg.go.dev/github.com/go-estoria/estoria" title="GoDoc" icon="book-open" >}}
