@@ -1,17 +1,11 @@
 ---
-title: My Site
-toc: false
+title: Estoria - Event Sourcing for Go
+toc: true
 ---
 
-This is the landing page.
-
-## Explore
-
 {{< cards >}}
-  {{< card link="docs" title="Docs" icon="book-open" >}}
-  {{< card link="about" title="About" icon="user" >}}
+  {{< card link="docs" title="Documentation" icon="book-open" >}}
+  {{< card link="component-library" title="Component Library" icon="check" >}}
+  {{< card link="https://pkg.go.dev/github.com/go-estoria/estoria" title="GoDoc" icon="book-open" >}}
+  {{< card link="https://github.com/go-estoria/estoria" title="GitHub" icon="github" >}}
 {{< /cards >}}
-
-## Documentation
-
-For more information, visit [Hextra](https://imfing.github.io/hextra).
