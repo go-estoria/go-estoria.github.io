@@ -34,8 +34,13 @@ menu:
       weight: 4
       params:
         type: search
-    - name: GitHub
+    - name: Slack
       weight: 5
+      url: "https://gophers.slack.com/archives/C09KM4AQ1BJ"
+      params:
+        icon: slack
+    - name: GitHub
+      weight: 6
       url: "https://github.com/go-estoria/estoria"
       params:
         icon: github
