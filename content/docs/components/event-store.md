@@ -59,7 +59,7 @@ _ = eventStore.AppendStream(ctx, streamID, events []*eventstore.WritableEvent{
 
 ### Event Store Implementations
 
-For production applications, Estoria provides a number of vendor-specific event store implementations via the [Component Library](../../../component-library#event-store-implementations).
+For production applications, Estoria provides a number of vendor-specific event store implementations via the [Component Library](../../../component-library#event-stores).
 
 The core library also includes a simple in-memory event store for testing and prototyping.
 

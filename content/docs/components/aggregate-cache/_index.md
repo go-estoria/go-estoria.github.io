@@ -14,4 +14,4 @@ The [cached aggregate store](../aggregate-store/cached) uses an aggregate cache 
 
 ## Implementations
 
-See [Aggregate Cache Implementations](/component-library/#aggregate-cache-implementations) in the component library for more information on available aggregate cache implementations.
+See [Aggregate Cache Implementations](/component-library/#aggregate-caches) in the component library for more information on available aggregate cache implementations.

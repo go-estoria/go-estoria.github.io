@@ -16,28 +16,31 @@ This functionality -- the loading and saving of aggregates using event streams -
 import (
     "context"
     "github.com/go-estoria/estoria/aggregatestore"
-    "github.com/go-estoria/estoria/entity"
+    "github.com/go-estoria/estoria/eventstore/memory"
     "github.com/google/uuid"
 )
 
 func main() {
     // create an event store
-    eventStore, _ := eventstore.NewInMemoryStore()
+    eventStore, _ := memory.NewEventStore()
 
-    // create the aggregate store (type parameter inferred from entity factory)
-    store, _ := aggregatestore.NewEventSourcedStore(eventStore, NewThing)
-
-    // create an aggregate
-    aggregate, _ := store.New(uuid.New())
-
-    // append some events
-    aggregate.Append(
-        &NameChangedEvent{NewName: "Paul Atreides"},
-        &NameChangedEvent{NewName: "Maud Dib"},
+    // create the aggregate store
+    store, _ := aggregatestore.New(eventStore, NewThing,
+        aggregatestore.WithEventTypes(
+            &NameChangedEvent{},
+        ),
     )
 
+    id := uuid.Must(uuid.NewV4())
+
+    // create an aggregate
+    aggregate, _ := store.New(id)
+
+    // append some events
+    _ = aggregate.Append(&NameChangedEvent{NewName: "Juliette"})
+
     // save the aggregate
-    store.Save(context.Background(), aggregate)
+    _ = store.Save(context.Background(), aggregate, nil)
 }
 ```
 
@@ -64,7 +67,7 @@ func New(id uuid.UUID) *Aggregate[E]
 The `Load()` method is a convenience method that instantiates a new aggregate using `New()` and then hydrates it by calling `Hydrate()`.
 
 ```go
-func Load(ctx context.Context, id uuid.UUID, opts LoadOptions) (*Aggregate[E], error)
+func Load(ctx context.Context, id uuid.UUID, opts *LoadOptions) (*Aggregate[E], error)
 ```
 
 ### Hydrating an Aggregate
@@ -74,7 +77,7 @@ Hydrating refers to the process of bringing an aggregate from its current state 
 The `Hydrate()` method streams events from the event store beginning at version N+1, where N is the current version of the aggregate, and applies them to the aggregate root entity.
 
 ```go
-func Hydrate(ctx context.Context, agg *Aggregate[E], opts HydrateOptions) error
+func Hydrate(ctx context.Context, agg *Aggregate[E], opts *HydrateOptions) error
 ```
 
 ### Saving an Aggregate
@@ -82,5 +85,5 @@ func Hydrate(ctx context.Context, agg *Aggregate[E], opts HydrateOptions) error
 The `Save()` method appends new events to the event store representing changes to the aggregate root entity.
 
 ```go
-func Save(ctx context.Context, agg *Aggregate[E], opts SaveOptions) error
+func Save(ctx context.Context, agg *Aggregate[E], opts *SaveOptions) error
 ```

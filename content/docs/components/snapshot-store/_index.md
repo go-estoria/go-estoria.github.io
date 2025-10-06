@@ -16,4 +16,4 @@ The [snapshotting aggregate store](../aggregate-store/snapshotting) uses a snaps
 
 ## Implementations
 
-See [Snapshot Store Implementations](../../component-library/#snapshot-store-implementations) in the component library for more information on available aggregate cache implementations.
+See [Snapshot Store Implementations](/component-library/#snapshot-stores) in the component library for more information on available aggregate cache implementations.
