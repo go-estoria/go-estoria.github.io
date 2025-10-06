@@ -14,19 +14,6 @@ Let's create a User entity type for our application. Each user will have a uniqu
 type User struct {
 	ID        uuid.UUID
 	Name      string
-	UpdatedAt time.Time
-}
-```
-
-Next, we need to define a **factory function** for creating Users. Name it whatever you like, and it should take a UUID and return a User object. Here, we're simply assigning the ID to the User and setting default values for Name and UpdatedAt.
-
-```go
-func NewUser(id uuid.UUID) User {
-	return User{
-		ID:        id,
-		Name:      "Unknown",
-		UpdatedAt: time.Now(),
-	}
 }
 ```
 
@@ -35,6 +22,14 @@ Our User type must implement the `estoria.Entity` interface, which requires defi
 ```go
 func (a User) EntityID() typeid.ID {
 	return typeid.New("user", a.ID)
+}
+```
+
+Finally, we must define a **factory function** for creating Users. Name it whatever you like, and it should take a UUID and return a User object. Here, we're simply assigning the ID to the User and setting a default name.
+
+```go
+func NewUser(id uuid.UUID) User {
+	return User{ID: id, Name: "Unknown"}
 }
 ```
 

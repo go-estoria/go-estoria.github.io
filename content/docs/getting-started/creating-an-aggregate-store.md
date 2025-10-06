@@ -11,20 +11,13 @@ The **aggregate store** persists aggregates by using an underlying event store t
 Let's create a new aggregate store for Users in our application:
 
 ```go
-import (
-    "log"
-    "github.com/go-estoria/estoria/aggregatestore"
-)
+import "github.com/go-estoria/estoria/aggregatestore"
 
-aggregateStore, err = aggregatestore.New(eventStore, NewUser,
+aggregateStore, _ := aggregatestore.New(eventStore, NewUser,
     aggregatestore.WithEventTypes(
-        UserCreatedEvent{},
         UserNameChangedEvent{},
     ),
 )
-if err != nil {
-    log.Fatalf("failed to create aggregate store: %v", err)
-}
 ```
 
 Notice that we're passing in the event store and the factory function for our User type. This enables the aggregate store to instantiate a User before applying events to it in order to reconstruct its state. We're also telling the aggregate store what types of events can be used with our entity type.

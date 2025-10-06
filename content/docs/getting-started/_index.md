@@ -14,23 +14,23 @@ go get github.com/go-estoria/estoria
 
 ## Quickstart
 
-See full runnable examples in [estoria-examples](https://github.com/go-estoria/estoria-examples).
+Run all of the code below in a [Go playground](https://goplay.tools/snippet/AcZmq9uunZf). See other full runnable examples in [estoria-examples](https://github.com/go-estoria/estoria-examples).
 
 ### Entities
 
-Entities must implement [`estoria.Entity`](https://pkg.go.dev/github.com/go-estoria/estoria#Entity) and provide a factory func:
+Entities must implement [`estoria.Entity`](https://pkg.go.dev/github.com/go-estoria/estoria#Entity) and provide a factory function:
 
 ```go
 type User struct {
-	ID        uuid.UUID
-	Name      string
+	ID   uuid.UUID
+	Name string
 }
+func (a User) EntityID() typeid.ID { return typeid.New("user", a.ID) }
 
 func NewUser(id uuid.UUID) User {
-    return User{ID: id, Name: "Unknown"}
+	return User{ID: id, Name: "Unknown"}
 }
 
-func (a User) EntityID() typeid.ID { return typeid.New("user", a.ID) }
 ```
 
 ### Events
@@ -45,7 +45,7 @@ type UserNameChanged struct {
 func (UserNameChanged) EventType() string { return "namechanged" }
 
 func (UserNameChanged) New() estoria.EntityEvent[User] {
-	return UserNameChanged{NewName: "Unknown User"}
+	return &UserNameChanged{NewName: "Unknown User"}
 }
 
 func (e UserNameChanged) ApplyTo(_ context.Context, user User) (User, error) {
@@ -56,14 +56,18 @@ func (e UserNameChanged) ApplyTo(_ context.Context, user User) (User, error) {
 
 ### Aggregates
 
-Create an event store to store events. Then create an aggregate store using the event store, your entity factory func, and your event types:
+Create an event store to store events:
 
 ```go
-eventStore, _ := inmemoryeventstore.New()
+eventStore, _ := memory.NewEventStore()
+```
 
+Then, create an aggregate store using the event store, your entity factory function, and your event types:
+
+```go
 aggregateStore, _ := aggregatestore.New(eventStore, NewUser,
     aggregatestore.WithEventTypes(
-        UserNameChangedEvent{},
+        UserNameChanged{},
     ),
 )
 ```
@@ -77,7 +81,7 @@ userID := uuid.Must(uuid.NewV4())
 newUser := aggregatestore.New(NewUser(userID), 0)
 
 // append an event
-_ = newUser.Append(UserNameChangedEvent{NewName: "Juliette"})
+_ = newUser.Append(UserNameChanged{NewName: "Juliette"})
 
 // save the aggregate
 _ = aggregateStore.Save(ctx, newUser, nil)
