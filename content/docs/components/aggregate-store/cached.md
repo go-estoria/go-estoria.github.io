@@ -21,7 +21,7 @@ import (
 
 func main() {
     // create an aggregate store
-    store, _ := aggregatestore.NewEventSourcedStore(eventStore, NewThing)
+    store, _ := aggregatestore.New(eventStore, NewThing)
 
     // create an aggregate cache
     cache := aggregatecache.New()

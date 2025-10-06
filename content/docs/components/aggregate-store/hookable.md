@@ -20,24 +20,28 @@ import (
 
 func main() {
     // create an aggregate store
-    store, _ := aggregatestore.NewEventSourcedStore(eventStore, NewThing)
+    store, _ := aggregatestore.New(eventStore, NewThing)
 
     // wrap an aggregate store with hook capabilities
     hookableStore, _ := aggregatestore.NewHookableStore(store)
 
     // define some lifecycle hooks
+
     hookableStore.BeforeLoad(func(ctx context.Context, id uuid.UUID) error {
 		log.Printf("loading aggregate %s", id.String())
 		return nil
 	})
+
 	hookableStore.AfterLoad(func(ctx context.Context, aggregate *aggregatestore.Aggregate[Account]) error {
 		log.Printf("loaded aggregate %s at version %d", aggregate.ID(), aggregate.Version())
 		return nil
 	})
+
 	hookableStore.BeforeSave(func(ctx context.Context, aggregate *aggregatestore.Aggregate[Account]) error {
 		log.Printf("saving aggregate %s from version %d", aggregate.ID(), aggregate.Version())
 		return nil
 	})
+
 	hookableStore.AfterSave(func(ctx context.Context, aggregate *aggregatestore.Aggregate[Account]) error {
 		log.Printf("saved aggregate %s to version %d", aggregate.ID(), aggregate.Version())
 		return nil
