@@ -2,6 +2,7 @@
 title: CQRS
 type: docs
 prev: docs/telemetry/
+next: docs/typeids/
 weight: 820
 ---
 
