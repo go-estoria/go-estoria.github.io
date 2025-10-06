@@ -12,9 +12,11 @@ Estoria requires Go >=1.25.
 go get github.com/go-estoria/estoria
 ```
 
+>The core Estoria components only depend on the Go standard library and `github.com/gofrs/uuid/v5` for UUID support. Vendor-specific components are imported separately as needed from [estoria-contrib](https://github.com/go-estoria/estoria-contrib).
+
 ## Quickstart
 
-Run all of the code below in a [Go playground](https://goplay.tools/snippet/AcZmq9uunZf). See other full runnable examples in [estoria-examples](https://github.com/go-estoria/estoria-examples).
+Run all of the code below in a [Go playground](https://goplay.tools/snippet/sB6aDoAoNS_f). See other full runnable examples in [estoria-examples](https://github.com/go-estoria/estoria-examples).
 
 ### Entities
 
@@ -25,6 +27,7 @@ type User struct {
 	ID   uuid.UUID
 	Name string
 }
+
 func (a User) EntityID() typeid.ID { return typeid.New("user", a.ID) }
 
 func NewUser(id uuid.UUID) User {
@@ -78,7 +81,7 @@ Now you can begin working with aggregates in your application:
 userID := uuid.Must(uuid.NewV4())
 
 // create a new User aggregate
-newUser := aggregatestore.New(NewUser(userID), 0)
+newUser := aggregateStore.New(userID, 0)
 
 // append an event
 _ = newUser.Append(UserNameChanged{NewName: "Juliette"})
