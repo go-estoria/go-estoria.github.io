@@ -7,5 +7,3 @@ sidebar:
   open: false
 weight: 200
 ---
-
-![components](/assets/high-level-components.png)

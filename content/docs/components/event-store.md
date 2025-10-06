@@ -2,23 +2,68 @@
 title: Event Store
 type: docs
 prev: docs/getting-started/
-next: docs/components/aggregate_store
+next: docs/components/aggregate-store
 sidebar:
   open: true
 weight: 110
 ---
 
+## Events
+
 An **event** is something that has occurred in the past, often with associated information.
 
 An **event stream** is a uniquely-identified, ordered sequence of events.
 
+Estoria represents an event as:
+
+```go
+type Event struct {
+	ID            typeid.ID
+	StreamID      typeid.ID
+	StreamVersion int64
+	Timestamp     time.Time
+	Data          []byte
+}
+```
+
+## Event Stores
+
 An **event store** reads events from and appends events to event streams.
 
-In an event-sourced system, the event store forms the foundation of the persistence layer. By maintaining a an append-only record of all changes to entities, it stores the complete history of their state over time.
+### Reading Streams
 
-## Event Store Implementations
+The `ReadStream` method reads events from an event stream, returning a `StreamIterator` that can be used to iterate over the events in the stream.
 
-Select an event store from [Event Store Implementations](../../component-library/#event-store-implementations) in the component library, or build your own. Anything implementing the following interface can be used as an event store with Estoria:
+```go
+iter, _ := eventStore.ReadStream(ctx, streamID, eventstore.ReadStreamOptions{}) (StreamIterator, error)
+
+for {
+	event, err := iter.Next(ctx)
+	if errors.Is(err, eventstore.ErrEndOfEventStream) {
+		break
+	}
+
+	// process event
+}
+```
+
+### Appending to Streams
+
+The `AppendStream` method appends one or more events to an event stream.
+
+```go
+_ = eventStore.AppendStream(ctx, streamID, events []*eventstore.WritableEvent{
+    {Type: "balancechanged", Data: []byte(`{"amount": 100}`)},
+}, eventstore.AppendStreamOptions{}) error
+```
+
+### Event Store Implementations
+
+For production applications, Estoria provides a number of vendor-specific event store implementations via the [Component Library](../../../component-library#event-store-implementations).
+
+The core library also includes a simple in-memory event store for testing and prototyping.
+
+Alternatively, you can implement your own event store. Anything implementing `ReadStream` and `AppendStream` can be used as an event store with Estoria:
 
 ```go
 import (
@@ -31,3 +76,5 @@ interface {
     ReadStream(context.Context, typeid.ID, eventstore.ReadStreamOptions) (eventstore.StreamIterator, error)
 }
 ```
+
+Reading and writing event streams are low-level operations in Estoria. Next, we'll see how to create an Aggregate Store that uses an event store to persist aggregates.
