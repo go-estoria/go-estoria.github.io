@@ -2,6 +2,7 @@
 title: TypeIDs
 type: docs
 prev: docs/cqrs/
+next: docs/examples/
 weight: 830
 ---
 

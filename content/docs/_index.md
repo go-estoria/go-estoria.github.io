@@ -10,4 +10,5 @@ type: docs
   {{< card link="/docs/components/aggregate-cache" title="Caching" icon="cog" >}}
   {{< card link="/docs/projections" title="Projections" icon="cog" >}}
   {{< card link="/docs/telemetry" title="Telemetry" icon="cog" >}}
+  {{< card link="/docs/examples" title="Examples" icon="clipboard" >}}
 {{< /cards >}}
