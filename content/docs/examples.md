@@ -7,9 +7,9 @@ weight: 840
 
 Every example below lives in
 [estoria-examples](https://github.com/go-estoria/estoria-examples) as a
-self-contained Go module that pins released versions of `estoria` and
-`estoria-contrib` — no `replace` directives. Any one of them can be copied out
-of the repo on its own and run.
+self-contained Go module pinning released versions of `estoria` and
+`estoria-contrib`. Any one of them can be copied out of the repo on its own
+and run.
 
 ## Applications
 
