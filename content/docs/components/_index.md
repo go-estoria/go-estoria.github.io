@@ -1,7 +1,7 @@
 ---
 title: Components
 type: docs
-prev: docs/getting-started
+prev: docs/examples/
 next: docs/components/event_store
 sidebar:
   open: false
