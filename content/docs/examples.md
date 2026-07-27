@@ -6,27 +6,22 @@ next: docs/components/
 weight: 130
 ---
 
-Every example below lives in
-[estoria-examples](https://github.com/go-estoria/estoria-examples) as a
-self-contained Go module pinning released versions of `estoria` and
-`estoria-contrib`. Any one of them can be copied out of the repo on its own
-and run.
+Every example below lives in [estoria-examples](https://github.com/go-estoria/estoria-examples) as a self-contained Go module.
 
 ## Backend Quickstarts
 
-| Quickstart | What it covers |
+| Quickstart | What it Covers |
 | --- | --- |
 | [PostgreSQL](https://github.com/go-estoria/estoria-examples/tree/main/postgres) | Postgres event store, including the transactional outbox for reliable event delivery to external consumers. |
 | [MongoDB](https://github.com/go-estoria/estoria-examples/tree/main/mongodb) | MongoDB event store using a single-collection strategy. |
 | [KurrentDB](https://github.com/go-estoria/estoria-examples/tree/main/kurrent) | KurrentDB (formerly EventStoreDB) event store with native stream mapping. |
 | [OpenTelemetry](https://github.com/go-estoria/estoria-examples/tree/main/opentelemetry) | Instrumenting event, aggregate, and snapshot stores with OTEL tracing and metrics, against Jaeger, Prometheus, and Grafana. See [Telemetry](/docs/telemetry). |
 
-## Applications
+## Demo Applications
 
-Complete, runnable apps with web UIs, showing what event sourcing with Estoria
-looks like end to end.
+Runnable apps with web UIs, showcasing Estoria's event sourcing features and capabilities.
 
-| Example | What it demonstrates | Try it |
+| Example | What it Demonstrates | Try It |
 | --- | --- | --- |
 | [Kanban](https://github.com/go-estoria/estoria-examples/tree/main/kanban) | A real-time collaborative board with a time-travel slider, live sync over SSE, optimistic concurrency surfaced in the UI, and snapshotting. SQLite — no Docker required. | |
 | [Orders](https://github.com/go-estoria/estoria-examples/tree/main/orders) | An order-fulfillment service: a strict state-machine domain, the transactional outbox delivering events to a CQRS read model and webhook log, and a live admin dashboard. Postgres. | [orders.demo.estoria.dev](https://orders.demo.estoria.dev) |
@@ -34,12 +29,9 @@ looks like end to end.
 | [Chess](https://github.com/go-estoria/estoria-examples/tree/main/chess) | Two-player chess where each game is an event stream: move legality enforced inside `ApplyTo`, a replay slider, optimistic concurrency as turn-race protection, and PGN export. SQLite. | [chess.demo.estoria.dev](https://chess.demo.estoria.dev) |
 | [Inspector](https://github.com/go-estoria/estoria-examples/tree/main/inspector) | A read-only web tool for browsing any supported event store: stream lists, event paging, payload inspection, and a live global-feed tail. | |
 
-The hosted demos are seeded fresh at the top of every hour and accept writes
-from anyone — which is what makes the concurrency behavior worth watching.
-
 ### Concepts
 
-| If you want to see… | Read | In the code |
+| Concepts | Read | In the Code |
 | --- | --- | --- |
 | Entities, events, and `ApplyTo` | [Defining Entities](/docs/getting-started/defining-entities), [Defining Events](/docs/getting-started/defining-events) | `kanban/board.go`, `kanban/board_events.go` |
 | Optimistic concurrency and version conflicts | [Aggregate Store](/docs/components/aggregate-store) | `kanban/server.go` (`runCommand`), `chess/server.go` |
