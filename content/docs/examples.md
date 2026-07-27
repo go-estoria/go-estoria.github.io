@@ -33,13 +33,13 @@ Runnable apps with web UIs, showcasing Estoria's event sourcing features and cap
 
 | Concepts | Read | In the Code |
 | --- | --- | --- |
-| Entities, events, and `ApplyTo` | [Defining Entities](/docs/getting-started/defining-entities), [Defining Events](/docs/getting-started/defining-events) | `kanban/board.go`, `kanban/board_events.go` |
-| Optimistic concurrency and version conflicts | [Aggregate Store](/docs/components/aggregate-store) | `kanban/server.go` (`runCommand`), `chess/server.go` |
-| Loading an aggregate at a past version | [Event-Sourced Aggregate Store](/docs/components/aggregate-store/event-sourced) | `kanban/server.go`, `chess/server.go` |
-| Snapshotting on a policy | [Snapshotting Aggregate Store](/docs/components/aggregate-store/snapshotting), [Snapshot Store](/docs/components/snapshot-store) | `kanban/main.go`, `fleet/main.go` |
-| Hooks reacting to a save | [Hookable Aggregate Store](/docs/components/aggregate-store/hookable) | `kanban/main.go` (SSE broadcast on `AfterSave`) |
-| Aggregate caching, and what it's worth | [Cached Aggregate Store](/docs/components/aggregate-store/cached), [Aggregate Cache](/docs/components/aggregate-cache) | `fleet/main.go`, plus the hydration benchmark in `fleet/server.go` |
-| Projections over a stream | [Projections](/docs/projections) | `kanban/server.go` (activity feed) |
-| CQRS with a read model | [CQRS](/docs/cqrs) | `orders/readmodel.go` |
-| The transactional outbox | [CQRS](/docs/cqrs) | `orders/main.go`, `orders/readmodel.go` |
-| Reading an event store directly | [Event Store](/docs/components/event-store) | `inspector/backend.go` |
+| Entities, events, and `ApplyTo` | [Defining Entities](/docs/getting-started/defining-entities), [Defining Events](/docs/getting-started/defining-events) | [`kanban/board.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/board.go), [`kanban/board_events.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/board_events.go) |
+| Optimistic concurrency and version conflicts | [Aggregate Store](/docs/components/aggregate-store) | [`kanban/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/server.go) (`runCommand`), [`chess/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/chess/server.go) |
+| Loading an aggregate at a past version | [Event-Sourced Aggregate Store](/docs/components/aggregate-store/event-sourced) | [`kanban/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/server.go), [`chess/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/chess/server.go) |
+| Snapshotting on a policy | [Snapshotting Aggregate Store](/docs/components/aggregate-store/snapshotting), [Snapshot Store](/docs/components/snapshot-store) | [`kanban/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/main.go), [`fleet/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/fleet/main.go) |
+| Hooks reacting to a save | [Hookable Aggregate Store](/docs/components/aggregate-store/hookable) | [`kanban/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/main.go) (SSE broadcast on `AfterSave`) |
+| Aggregate caching, and what it's worth | [Cached Aggregate Store](/docs/components/aggregate-store/cached), [Aggregate Cache](/docs/components/aggregate-cache) | [`fleet/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/fleet/main.go), plus the hydration benchmark in [`fleet/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/fleet/server.go) |
+| Projections over a stream | [Projections](/docs/projections) | [`kanban/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/server.go) (activity feed) |
+| CQRS with a read model | [CQRS](/docs/cqrs) | [`orders/readmodel.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/readmodel.go) |
+| The transactional outbox | [CQRS](/docs/cqrs) | [`orders/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/main.go), [`orders/readmodel.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/readmodel.go) |
+| Reading an event store directly | [Event Store](/docs/components/event-store) | [`inspector/backend.go`](https://github.com/go-estoria/estoria-examples/blob/main/inspector/backend.go) |
