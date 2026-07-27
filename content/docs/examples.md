@@ -24,6 +24,26 @@ looks like end to end.
   {{< card link="https://github.com/go-estoria/estoria-examples/tree/main/inspector" title="Inspector" icon="search" subtitle="A read-only web tool for browsing any supported event store: stream lists, event paging, payload inspection, and a live global-feed tail." >}}
 {{< /cards >}}
 
+### Try them without installing anything
+
+Two are running live. Both are seeded fresh at the top of every hour, so
+anything you do to them is temporary by design — and both accept writes from
+anyone, which is exactly what makes optimistic concurrency worth watching.
+
+- **[chess.demo.estoria.dev](https://chess.demo.estoria.dev)** — start a game,
+  then open it in a second tab and play both sides. Every move is an event
+  appended to that game's stream; the replay slider re-derives the position
+  from any prefix of it.
+- **[orders.demo.estoria.dev](https://orders.demo.estoria.dev)** — place an
+  order and watch the outbox monitor. The order list doesn't move when the
+  command succeeds; it moves a moment later, when the outbox processor
+  delivers the event and the read model catches up. That gap is the CQRS split,
+  made visible.
+
+These are a convenience, not part of the project's infrastructure. Every
+example runs locally with one command, and the deployment recipe
+(`Dockerfile` and `railway.toml`) lives beside each one in the repository.
+
 ### Where to look for a given concept
 
 | If you want to see… | Read | In the code |
