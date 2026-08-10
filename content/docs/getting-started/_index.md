@@ -16,7 +16,7 @@ go get github.com/go-estoria/estoria
 
 ## Quickstart
 
-Run all of the code below in a [Go playground](https://goplay.tools/snippet/sB6aDoAoNS_f). For complete applications built on Estoria — a collaborative kanban board, an order-fulfillment service, a sensor fleet, chess — see [Examples](/docs/examples).
+Run all of the code below in a [Go playground](https://goplay.tools/snippet/0fWPXzLg8hp). For complete applications built on Estoria — a collaborative kanban board, an order-fulfillment service, a sensor fleet, chess — see [Examples](/docs/examples).
 
 ### Entities
 
