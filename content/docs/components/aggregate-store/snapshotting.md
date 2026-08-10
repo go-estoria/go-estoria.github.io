@@ -61,7 +61,7 @@ The snapshot policy determines when a snapshot should be captured and saved. The
 
 ### Custom State Codec
 
-By default, the snapshotting aggregate store marshals snapshot state as JSON. You can override this behavior by providing an alternative state codec using `WithStateCodec()`. A state codec converts entity state to and from bytes:
+By default, the snapshotting aggregate store marshals snapshot state as JSON. You can override this behavior by providing an alternative state codec using `WithStateCodec()`. A state codec converts entity state to and from bytes, and declares the MIME content type of the bytes it produces. The declaration is stored with each snapshot; a snapshot declaring a content type the store's codec does not read is skipped in favor of full event replay.
 
 ```go
 import (
@@ -73,6 +73,7 @@ type CustomStateCodec[S any] struct{}
 
 func (c CustomStateCodec[S]) MarshalState(state S) ([]byte, error)
 func (c CustomStateCodec[S]) UnmarshalState(data []byte, dest *S) error
+func (c CustomStateCodec[S]) ContentType() string
 
 snapshottingStore, err := aggregatestore.NewSnapshottingStore(innerStore, snapshotStore, policy,
 	aggregatestore.WithStateCodec[Thing](CustomStateCodec[Thing]{}))

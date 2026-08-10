@@ -54,6 +54,23 @@ _, err = proj.Project(ctx, projection.EventHandlerFunc(func(_ context.Context, e
 }))
 ```
 
+## Projecting All Streams
+
+A projection over a single stream sees one aggregate's history. To build read models spanning every stream, use `ReadAll`, available from event stores that implement `eventstore.GlobalReader`:
+
+```go
+globalReader, ok := eventStore.(eventstore.GlobalReader)
+if !ok {
+    // this event store does not support global reads
+}
+
+iter, _ := globalReader.ReadAll(ctx, eventstore.ReadAllOptions{})
+
+proj, _ := projection.New(iter)
+```
+
+Events arrive in ascending global order, each carrying a `GlobalPosition`. Persist the last position your projection processed and resume from it with `ReadAllOptions{AfterPosition: position}` — the position is exclusive, so a resumed read continues with the first unprocessed event.
+
 ## Persistent Projections
 
 A projection that updates a persistent read model (e.g., a database table) is called a persistent projection. Persistent projections are typically used in CQRS systems to create read models that can be queried independently of the write model.
