@@ -23,7 +23,7 @@ import (
 
 func main() {
 	// create an aggregate store
-	store, _ := aggregatestore.New(eventStore, NewThing)
+	store, _ := aggregatestore.New(eventStore, "thing", NewThing)
 
     // create a snapshot store
 	snapshotStore := memory.NewSnapshotStore()
@@ -47,7 +47,7 @@ The snapshotting aggregate store relies on the following components:
 - **An underlying aggregate store.** Because the snapshotting aggregate store can only hydrate aggregates to specific versions (those for which there are snapshots available), it must defer to another aggregate store to completely hydrate an aggregate to its latest version if events have been appended since the most recent snapshot.
 - **A snapshot store.** The snapshotting aggregate store needs to know how to save and load snapshots, and for this it uses a [snapshot store](../snapshot_store/).
 - **A snapshot policy.** The snapshot policy determines when a snapshot should be captured and saved. For example, a common policy is to capture a snapshot every N events.
-- **A snapshot marshaler.** By default, snapshots are marshaled as JSON, but this can be changed via an initialization option.
+- **A state codec.** By default, snapshot state is marshaled as JSON, but this can be changed via an initialization option.
 
 ### Snapshot Store
 
@@ -59,20 +59,23 @@ The snapshot policy determines when a snapshot should be captured and saved. The
 
 ## Options
 
-### Custom Snapshot Marshaler
+### Custom State Codec
 
-By default, the snapshotting aggregate store marshals snapshot data as JSON. You can override this behavior by providing an alternative snapshot marshaler using `WithSnapshotMarshaler()`.
+By default, the snapshotting aggregate store marshals snapshot state as JSON. You can override this behavior by providing an alternative state codec using `WithStateCodec()`. A state codec converts entity state to and from bytes:
 
 ```go
-import "github.com/go-estoria/estoria/aggregatestore"
+import (
+	"github.com/go-estoria/estoria"
+	"github.com/go-estoria/estoria/aggregatestore"
+)
 
-type CustomSnapshotMarshaler[E estoria.Entity] struct{}
+type CustomStateCodec[S any] struct{}
 
-func (m *CustomSnapshotMarshaler[E]) Marshal(src PT) ([]byte, error)
-func (m *CustomSnapshotMarshaler[E]) Unmarshal(data []byte, dest PT) error
+func (c CustomStateCodec[S]) MarshalState(state S) ([]byte, error)
+func (c CustomStateCodec[S]) UnmarshalState(data []byte, dest *S) error
 
-snapshottingStore, err := aggregatestore.NewSnapshottingReader(innerStore, snapshotter,
-	aggregatestore.WithSnapshotMarshaler(CustomSnapshotMarshaler{}))
+snapshottingStore, err := aggregatestore.NewSnapshottingStore(innerStore, snapshotStore, policy,
+	aggregatestore.WithStateCodec[Thing](CustomStateCodec[Thing]{}))
 ```
 
 ### Custom Snapshot Reader
@@ -88,8 +91,8 @@ func (CustomSnapshotReader) ReadSnapshot(ctx context.Context, aggregateID typeid
 	return nil, errors.New("todo: implement custom snapshot reader")
 }
 
-snapshottingStore, err := aggregatestore.NewSnapshottingReader(innerStore, snapshotter,
-	aggregatestore.WithSnapshotReader(CustomSnapshotReader{}))
+snapshottingStore, err := aggregatestore.NewSnapshottingStore(innerStore, snapshotStore, policy,
+	aggregatestore.WithSnapshotReader[Thing](CustomSnapshotReader{}))
 ```
 
 ### Custom Snapshot Writer
@@ -101,10 +104,10 @@ import "github.com/go-estoria/estoria/aggregatestore"
 
 type CustomSnapshotWriter struct{}
 
-func (CustomSnapshotWriter) ReadSnapshot(ctx context.Context, aggregateID typeid.ID) (*aggregatestore.Snapshot, error) {
-	return nil, errors.New("todo: implement custom snapshot writer")
+func (CustomSnapshotWriter) WriteSnapshot(ctx context.Context, snap *snapshotstore.AggregateSnapshot) error {
+	return errors.New("todo: implement custom snapshot writer")
 }
 
-snapshottingStore, err := aggregatestore.NewSnapshottingWriter(innerStore, snapshotter,
-	aggregatestore.WithSnapshotWriter(CustomSnapshotWriter{}))
+snapshottingStore, err := aggregatestore.NewSnapshottingStore(innerStore, snapshotStore, policy,
+	aggregatestore.WithSnapshotWriter[Thing](CustomSnapshotWriter{}))
 ```

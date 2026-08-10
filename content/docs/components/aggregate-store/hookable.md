@@ -20,7 +20,7 @@ import (
 
 func main() {
     // create an aggregate store
-    store, _ := aggregatestore.New(eventStore, NewThing)
+    store, _ := aggregatestore.New(eventStore, "thing", NewThing)
 
     // wrap an aggregate store with hook capabilities
     hookableStore, _ := aggregatestore.NewHookableStore(store)

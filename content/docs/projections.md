@@ -71,11 +71,14 @@ _, err = proj.Project(ctx, projection.EventHandlerFunc(func(_ context.Context, e
     }
 
     var e BalanceChangedEvent
-    event, _ := json.Unmarshal(evt.Data, &e)
+    if err := json.Unmarshal(evt.Data, &e); err != nil {
+        return err
+    }
+
     _, err := db.Exec(
         "UPDATE accounts SET balance = balance + ? WHERE account_id = ?",
-        e.Amount, 
-        evt.ID.EntityID,
+        e.Amount,
+        evt.StreamID.UUID,
     )
     return err
 }))

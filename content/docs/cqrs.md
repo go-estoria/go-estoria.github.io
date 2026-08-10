@@ -39,7 +39,7 @@ func (a *Application) HandleModifyBalance(r *http.Request, w *http.ResponseWrite
 
     account, _ := a.accounts.Load(ctx, cmd.AccountID)
 
-    _ = account.Append(&ModifyBalanceEvent{
+    account.Append(&ModifyBalanceEvent{
         Amount: cmd.Amount,
     })
 
