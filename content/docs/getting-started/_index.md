@@ -6,7 +6,7 @@ next: docs/getting-started/defining-entities
 weight: 120
 ---
 
-Estoria requires Go >=1.25.
+Estoria requires Go >=1.26.
 
 ```shell
 go get github.com/go-estoria/estoria
@@ -20,7 +20,7 @@ Run all of the code below in a [Go playground](https://goplay.tools/snippet/sB6a
 
 ### Entities
 
-Entities must implement [`estoria.Entity`](https://pkg.go.dev/github.com/go-estoria/estoria#Entity) and provide a factory function:
+An entity is any type; no interface is required. Provide a factory function that builds one from a UUID:
 
 ```go
 type User struct {
@@ -28,17 +28,14 @@ type User struct {
 	Name string
 }
 
-func (a User) EntityID() typeid.ID { return typeid.New("user", a.ID) }
-
 func NewUser(id uuid.UUID) User {
 	return User{ID: id, Name: "Unknown"}
 }
-
 ```
 
 ### Events
 
-Events must implement [`estoria.EntityEvent`](https://pkg.go.dev/github.com/go-estoria/estoria#EntityEvent):
+Events must implement [`estoria.DomainEvent`](https://pkg.go.dev/github.com/go-estoria/estoria#DomainEvent):
 
 ```go
 type UserNameChanged struct {
@@ -47,13 +44,13 @@ type UserNameChanged struct {
 
 func (UserNameChanged) EventType() string { return "namechanged" }
 
-func (UserNameChanged) New() estoria.EntityEvent[User] {
+func (UserNameChanged) New() estoria.DomainEvent[User] {
 	return &UserNameChanged{NewName: "Unknown User"}
 }
 
-func (e UserNameChanged) ApplyTo(_ context.Context, user User) (User, error) {
+func (e UserNameChanged) ApplyTo(user User) User {
 	user.Name = e.NewName
-	return user, nil
+	return user
 }
 ```
 
@@ -65,10 +62,10 @@ Create an event store to store events:
 eventStore, _ := memory.NewEventStore()
 ```
 
-Then, create an aggregate store using the event store, your entity factory function, and your event types:
+Then, create an aggregate store using the event store, an aggregate type name, your entity factory function, and your event types. The type name becomes part of every aggregate's stream address, so it must remain stable for the lifetime of your data:
 
 ```go
-aggregateStore, _ := aggregatestore.New(eventStore, NewUser,
+aggregateStore, _ := aggregatestore.New(eventStore, "user", NewUser,
     aggregatestore.WithEventTypes(
         UserNameChanged{},
     ),
@@ -81,10 +78,10 @@ Now you can begin working with aggregates in your application:
 userID := uuid.Must(uuid.NewV4())
 
 // create a new User aggregate
-newUser := aggregateStore.New(userID, 0)
+newUser := aggregateStore.New(userID)
 
 // append an event
-_ = newUser.Append(UserNameChanged{NewName: "Juliette"})
+newUser.Append(UserNameChanged{NewName: "Juliette"})
 
 // save the aggregate
 _ = aggregateStore.Save(ctx, newUser, nil)
@@ -92,6 +89,6 @@ _ = aggregateStore.Save(ctx, newUser, nil)
 // load the aggregate
 loadedUser, _ := aggregateStore.Load(ctx, userID, nil)
 
-// access the aggregate root
-user := loadedUser.Entity()
+// access the aggregate's state
+user := loadedUser.State()
 ```

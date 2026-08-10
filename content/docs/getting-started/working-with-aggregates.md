@@ -15,13 +15,13 @@ Create a new aggregate with `New()`:
 ```go
 userID := uuid.Must(uuid.NewV4())
 
-newUser := aggregateStore.New(userID, 0)
+newUser := aggregateStore.New(userID)
 ```
 
-We'll also append an event to change the User's name to "Juliette"
+We'll also append an event to change the User's name to "Juliette". Appending only queues the event on the aggregate; nothing is persisted or applied until the aggregate is saved:
 
 ```go
-_ = newUser.Append(UserNameChanged{NewName: "Juliette"})
+newUser.Append(UserNameChanged{NewName: "Juliette"})
 ```
 
 ## Saving Aggregates
@@ -32,6 +32,8 @@ To save an aggregate, use `Save()`:
 _ = aggregateStore.Save(ctx, newUser, nil)
 ```
 
+Saving appends the queued events to the aggregate's event stream, then applies them to the in-memory state. If a save fails *after* its events were durably appended, the error carries the `aggregatestore.ErrEventsAppended` sentinel (check with `errors.Is`); recover by discarding the aggregate and reloading it.
+
 ## Loading Aggregates
 
 To load an aggregate, use `Load()`:
@@ -40,11 +42,10 @@ To load an aggregate, use `Load()`:
 loadedUser, _ := aggregateStore.Load(ctx, userID, nil)
 ```
 
-The aggregate's root entity can be accessed using `.Entity()`:
-
+The aggregate's state can be accessed using `.State()`:
 
 ```go
-user := loadedUser.Entity()
+user := loadedUser.State()
 ```
 
 We can also see what version the aggregate is at (i.e. how many events have been applied to it):

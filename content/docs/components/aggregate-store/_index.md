@@ -8,10 +8,10 @@ weight: 210
 
 An **aggregate** is a group of domain objects that is treated as a single unit. The aggregate's _root_ entity is the entrypoint through which we interact with and manage the state and behavior of all related objects.
 
-An **aggregate store** loads, hydrates, and saves aggregates. It is a generic component that requires an entity type as a type parameter:
+An **aggregate store** loads, hydrates, and saves aggregates. It is a generic component parameterized by the entity type it manages:
 
 ```go
-type AggregateStore[E estoria.Entity] interface {...}
+type Store[S any] interface {...}
 ```
 
 This enables it to instantiate new entities and events that are applicable to that entity type. To work with multiple entity types, simply create an aggregate store for each one.
@@ -36,21 +36,18 @@ The [cached aggregate store](./cached) wraps an underlying aggregate store and p
 
 The [hookable aggregate store](./hookable) wraps an underlying aggregate store and provides the ability to inject lifecycle hooks that are called before and after aggregates are loaded and saved.
 
-### Custom Aggregate Stores
+### Wrapping Aggregate Stores
 
-Anything implementing the following interface can be used as an aggregate store with Estoria:
+The `aggregatestore.Store[S]` interface is what the wrapping stores above compose over:
 
 ```go
-import (
-  "github.com/go-estoria/estoria/aggregatestore"
-  "github.com/go-estoria/estoria/entity"
-  "github.com/go-estoria/estoria/typeid"
-)
-
-type AggregateStore[E estoria.Entity] interface {
-    New(id uuid.UUID) (*aggregatestore.Aggregate[E], error)
-    Load(context.Context, typeid.ID, aggregatestore.LoadOptions) (*Aggregate[E], error)
-    Hydrate(context.Context, *aggregatestore.Aggregate[E], aggregatestore.HydrateOptions) error
-    Save(context.Context, *aggregatestore.Aggregate[E], aggregatestore.SaveOptions) error
+type Store[S any] interface {
+    AggregateType() string
+    New(id uuid.UUID) *Aggregate[S]
+    Load(ctx context.Context, id uuid.UUID, opts *LoadOptions) (*Aggregate[S], error)
+    Hydrate(ctx context.Context, aggregate *Aggregate[S], opts *HydrateOptions) error
+    Save(ctx context.Context, aggregate *Aggregate[S], opts *SaveOptions) error
 }
 ```
+
+Aggregate construction belongs exclusively to the `aggregatestore` package, so from-scratch third-party implementations of this interface are not supported. To extend aggregate store behavior, wrap an existing store — the snapshotting, cached, and hookable stores above are all examples of this pattern, delegating to an inner store and adding behavior around it. The pluggable surfaces are the event store, the snapshot store, and the aggregate cache.

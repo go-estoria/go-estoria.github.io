@@ -17,7 +17,7 @@ import (
     "context"
     "github.com/go-estoria/estoria/aggregatestore"
     "github.com/go-estoria/estoria/eventstore/memory"
-    "github.com/google/uuid"
+    "github.com/gofrs/uuid/v5"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
     eventStore, _ := memory.NewEventStore()
 
     // create the aggregate store
-    store, _ := aggregatestore.New(eventStore, NewThing,
+    store, _ := aggregatestore.New(eventStore, "thing", NewThing,
         aggregatestore.WithEventTypes(
             &NameChangedEvent{},
         ),
@@ -34,10 +34,10 @@ func main() {
     id := uuid.Must(uuid.NewV4())
 
     // create an aggregate
-    aggregate, _ := store.New(id)
+    aggregate := store.New(id)
 
     // append some events
-    _ = aggregate.Append(&NameChangedEvent{NewName: "Juliette"})
+    aggregate.Append(&NameChangedEvent{NewName: "Juliette"})
 
     // save the aggregate
     _ = store.Save(context.Background(), aggregate, nil)

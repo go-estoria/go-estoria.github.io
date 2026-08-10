@@ -15,16 +15,19 @@ A cached aggregate store requires an inner aggregate store (to defer to when hyd
 ```go
 import (
     "context"
+
+    "github.com/allegro/bigcache/v3"
     "github.com/go-estoria/estoria/aggregatestore"
     "github.com/go-estoria/estoria-contrib/bigcache/aggregatecache"
 )
 
 func main() {
     // create an aggregate store
-    store, _ := aggregatestore.New(eventStore, NewThing)
+    store, _ := aggregatestore.New(eventStore, "thing", NewThing)
 
-    // create an aggregate cache
-    cache := aggregatecache.New()
+    // create an aggregate cache over a cache backend
+    backend, _ := bigcache.New(context.Background(), bigcache.DefaultConfig(time.Minute))
+    cache := aggregatecache.New[Thing](backend)
 
     // wrap an aggregate store with caching capabilities
     cachedStore, _ := aggregatestore.NewCachedStore(store, cache)
@@ -40,8 +43,10 @@ While the cached aggregate store is a core Estoria component, it relies on an ag
 Anything implementing the following interface can be used as an aggregate cache with Estoria:
 
 ```go
-type AggregateCache[E estoria.Entity] interface {
-	GetAggregate(ctx context.Context, aggregateID uuid.UUID) (*aggregatestore.Aggregate[E], error)
-	PutAggregate(ctx context.Context, aggregate *aggregatestore.Aggregate[E]) error
+type AggregateCache[S any] interface {
+	GetAggregate(ctx context.Context, aggregateID typeid.ID) (*aggregatestore.CachedAggregate[S], error)
+	PutAggregate(ctx context.Context, aggregateID typeid.ID, entry aggregatestore.CachedAggregate[S]) error
 }
 ```
+
+A cache stores and returns `CachedAggregate[S]` entries — a `{State, Version}` value — rather than aggregates. The cached store composes the aggregate itself from a hit, so a cache never needs to construct one. Returning `nil, nil` from `GetAggregate` signals a cache miss.

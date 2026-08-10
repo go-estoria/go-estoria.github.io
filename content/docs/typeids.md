@@ -19,7 +19,6 @@ id := typeid.New("user", uuid.Must(uuid.FromString("978e35ad-876f-43df-8e7d-cbcb
 fmt.Println(id.Type)   // "user"
 fmt.Println(id.UUID)   // 978e35ad-876f-43df-8e7d-cbcb6dd855f9
 fmt.Println(id.String()) // "user_978e35ad-876f-43df-8e7d-cbcb6dd855f9"
-fmt.Println(id.ShortString()) // "user_550e8400"
 ```
 
 >Note that the Estoria `typeid` package is _not_ an implementation of [Jetify's TypeID specification](https://github.com/jetify-com/typeid/tree/main/spec). It is simply a struct that holds a type name and a UUID.

@@ -6,26 +6,20 @@ next: getting-started/defining-events
 weight: 121
 ---
 
-An **entity** is a uniquely-identifyable domain object that we want to store as an event-sourced record.
+An **entity** is a uniquely-identifyable domain object that we want to store as an event-sourced record. In Estoria, an entity is any Go type — no interface is required. The aggregate that manages an entity carries the identity and version; the entity itself only carries state.
 
-Let's create a User entity type for our application. Each user will have a unique identifier, a name, and a timestamp for when the user was last updated.
+Let's create a User entity type for our application:
 
 ```go
 type User struct {
-	ID        uuid.UUID
-	Name      string
+	ID   uuid.UUID
+	Name string
 }
 ```
 
-Our User type must implement the `estoria.Entity` interface, which requires defining an `EntityID()` method. This method should return a the User's _TypeID_, which is the User's UUID with an associated type name.
+The `ID` field here is optional — Estoria addresses aggregates by an ID it composes for you, so your entity may record its UUID, but it doesn't have to.
 
-```go
-func (a User) EntityID() typeid.ID {
-	return typeid.New("user", a.ID)
-}
-```
-
-Finally, we must define a **factory function** for creating Users. Name it whatever you like, and it should take a UUID and return a User object. Here, we're simply assigning the ID to the User and setting a default name.
+We must define a **factory function** for creating Users. Name it whatever you like; it should take a UUID and return a User object. The aggregate store uses it to build a fresh User before replaying events onto it. Here, we're assigning the ID to the User and setting a default name:
 
 ```go
 func NewUser(id uuid.UUID) User {
