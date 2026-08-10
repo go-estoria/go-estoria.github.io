@@ -24,6 +24,24 @@ We'll also append an event to change the User's name to "Juliette". Appending on
 newUser.Append(UserNameChanged{NewName: "Juliette"})
 ```
 
+### Event Metadata
+
+Events can carry key-value metadata, persisted alongside the event data. Attach metadata to specific events with `AppendWithMetadata`:
+
+```go
+newUser.AppendWithMetadata(map[string]string{"request_id": requestID},
+    UserNameChanged{NewName: "Juliette"},
+)
+```
+
+To amend all of an aggregate's pending events at once — the natural fit for ambient context like correlation or trace IDs, typically injected from a `BeforeSave` hook — use `MergeEventMetadata`:
+
+```go
+newUser.MergeEventMetadata(map[string]string{"correlation_id": correlationID})
+```
+
+Metadata keys prefixed `estoria.` are reserved for Estoria itself; a save whose events carry one fails before anything is appended.
+
 ## Saving Aggregates
 
 To save an aggregate, use `Save()`:

@@ -16,13 +16,14 @@ import "github.com/go-estoria/estoria/eventstore/memory"
 eventStore, _ := memory.NewEventStore()
 ```
 
-Using our event store, we can save and load events. The event store is agnostic to our entity types, so we can use it to store events for any entity type we define.
+Using our event store, we can save and load events. The event store is agnostic to our entity types — it stores opaque event payloads for any stream:
 
 ```go
-_ = eventStore.AppendEvents(context.Background(), typeid.NewV4("user"),
-    []eventstore.WriteableEvent{
-        &UserNameChanged{NewName: "Juliette"},
+_, _ = eventStore.AppendStream(context.Background(), typeid.NewV4("user"),
+    []*eventstore.WritableEvent{
+        {Type: "namechanged", Data: []byte(`{"NewName": "Juliette"}`)},
     },
+    eventstore.AppendStreamOptions{},
 )
 ```
 

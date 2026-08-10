@@ -12,7 +12,7 @@ The **event stream snapshot store** persists snapshots as events in the same eve
 ```go
 import "github.com/go-estoria/estoria/snapshotstore/eventstream"
 
-snapshotStore := eventstream.New(eventStore)
+snapshotStore, _ := eventstream.New(eventStore)
 ```
 
 ## Storage format
@@ -23,7 +23,15 @@ Because this store depends on metadata surviving the round trip through the back
 
 ## Retention
 
-Nothing deletes events, so this store retains every snapshot ever written. A bounded read (loading an aggregate at a specific version) walks the snapshot stream backwards to find the newest snapshot at or below the requested version, which makes time-travel loads efficient — but be aware that snapshot streams grow without bound.
+By default, this store retains every snapshot ever written. A bounded read (loading an aggregate at a specific version) walks the snapshot stream backwards to find the newest snapshot at or below the requested version, which makes time-travel loads efficient — but be aware that snapshot streams grow without bound.
+
+To bound them, use `WithMaxSnapshots`:
+
+```go
+snapshotStore, _ := eventstream.New(eventStore, eventstream.WithMaxSnapshots(3))
+```
+
+After each snapshot write, snapshots older than the newest `n` are pruned by truncating the snapshot stream. This requires a backing event store that implements `eventstore.StreamDeleter`, checked at construction. Pruning is best-effort: a prune failure is logged, never surfaced, and the next successful write prunes what the failed one missed.
 
 ## Upgrading from before v0.7.0
 
