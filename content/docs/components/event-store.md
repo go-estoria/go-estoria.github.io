@@ -95,4 +95,6 @@ Beyond reading and appending, an event store may implement optional interfaces. 
 
 Each has a dedicated acceptance suite in `eventstore/storetest`.
 
+Every officially supported implementation provides global reads, and all but KurrentDB support stream deletion — KurrentDB's native delete semantics cannot honestly satisfy the interface's contract, so that store deliberately does not claim it. The [Component Library](/component-library#event-stores) lists per-backend support.
+
 Reading and writing event streams are low-level operations in Estoria. Next, we'll see how to create an Aggregate Store that uses an event store to persist aggregates.

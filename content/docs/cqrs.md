@@ -98,3 +98,9 @@ This approach can become unwieldy as the number of events grows, or as querying 
 #### Dedicated Read Models
 
 If your aggregates are comprised of many events, or if you need more complex querying capabilities, you may want to build a dedicated read model. Rather than projecting an in-memory view when a query is made, you instead project events to a database whenever an aggregate changes. This database is often entirely separate from the database that backs the event store and is optimized for queries (reads) rather than writes.
+
+#### The Transactional Outbox
+
+A dedicated read model raises a delivery problem: the append to the event store and the update to the read model are writes to two different systems, and either can succeed while the other fails. The [transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html) pattern closes that gap — each append also writes one outbox row per event *within the same database transaction*, so events and their pending deliveries commit or roll back together. A separate processor then works through the outbox, invoking your handler for each item and retrying on failure, giving at-least-once delivery to read models, webhooks, or message brokers. Handlers must be idempotent.
+
+The [PostgreSQL](https://github.com/go-estoria/estoria-contrib/tree/main/postgres/outbox) and [MongoDB](https://github.com/go-estoria/estoria-contrib/tree/main/mongodb/outbox) event stores each ship a companion outbox package. The [Orders example](/docs/examples) shows the pattern end to end: an outbox delivering events to a CQRS read model and a webhook log.
