@@ -69,23 +69,28 @@ type AccountView struct {
     LastUpdated time.Time `json:"last_updated"`
 }
 
-func (a *Application) HandleGetAccountSummary(r *http.Request, w *http.ResponseWriter) {
-    accountID := uuid.MustParse(r.URL.Query().Get("account_id"))
+func (a *Application) HandleGetAccountSummary(w http.ResponseWriter, r *http.Request) {
+    accountID := uuid.FromStringOrNil(r.URL.Query().Get("account_id"))
 
-    iter, _ := a.events.ReadStream(ctx, typeid.New("account", accountID)), eventstore.ReadStreamOptions{})
+    iter, _ := a.events.ReadStream(r.Context(), typeid.New("account", accountID), eventstore.ReadStreamOptions{})
 
-    projection, _ := projection.New(iter)
+    fold, _ := projection.NewFold(iter)
 
     account := &AccountView{}
-    _ = projection.Project(func(_ context.Context, event *eventstore.Event) error {
-        switch e := event.ID.Type {
-        case "balancechanged":
-            account.Balance += e.Amount
-            account.LastUpdated = event.Timestamp
+    _, _ = fold.Project(r.Context(), projection.EventHandlerFunc(func(_ context.Context, event *eventstore.Event) error {
+        if event.ID.Type != "balancechanged" {
+            return nil
         }
 
+        var e BalanceChangedEvent
+        if err := json.Unmarshal(event.Data, &e); err != nil {
+            return err
+        }
+
+        account.Balance += e.Amount
+        account.LastUpdated = event.Timestamp
         return nil
-    })
+    }))
 
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
@@ -98,6 +103,8 @@ This approach can become unwieldy as the number of events grows, or as querying 
 #### Dedicated Read Models
 
 If your aggregates are comprised of many events, or if you need more complex querying capabilities, you may want to build a dedicated read model. Rather than projecting an in-memory view when a query is made, you instead project events to a database whenever an aggregate changes. This database is often entirely separate from the database that backs the event store and is optimized for queries (reads) rather than writes.
+
+The [continuous projection processor](../projections#continuous-projections) is built for exactly this: it replays history into the read model from a checkpoint, then tails the event store's global sequence to keep the model current.
 
 #### The Transactional Outbox
 
