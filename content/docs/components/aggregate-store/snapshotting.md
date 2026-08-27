@@ -1,7 +1,7 @@
 ---
 title: Snapshotting Aggregate Store
 type: docs
-weight: 220
+weight: 225
 ---
 
 A snapshotting aggregate store wraps an existing aggregate store and provides snapshotting capabilities.

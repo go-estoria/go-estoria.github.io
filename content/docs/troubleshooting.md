@@ -94,6 +94,16 @@ func (c Codec[S]) UnmarshalState(data []byte, dest *S) error {
 - **Snapshots being skipped on load?** A snapshot declaring a content type the store's `StateCodec` does not produce is skipped in favor of event replay — expected after changing codecs; the next save writes a fresh snapshot.
 - **The eventstream snapshot store** persists snapshots in a companion stream named by suffixing the aggregate's type: aggregate `account_<uuid>` snapshots to stream `accountsnapshot_<uuid>`. Old snapshots can be pruned automatically with `WithMaxSnapshots`.
 
+## Projection Lifecycle Issues
+
+- **`Run` refused with `ErrClaimStanding`?** The recorded runner has not released its claim. If that process is still alive, let it finish or stop it gracefully — its wind-down releases the claim. If it crashed, only an operator can vouch that it is gone: rerun with `WithTakeover(actor, reason)`, which records the attestation durably. A process that exits without waiting for `Run` to return leaves a standing claim behind — join the run on shutdown.
+- **`Promote` refused with `ErrNotCertified`?** Only the run that drained the rebuild to the head may promote it, and only while its processor is still the attempt's claimant. `Run` the rebuild in this process to re-certify against the current head, then promote.
+- **`Run` returned `ErrRunnerDisplaced`?** Another runner took over the attempt — the build continues there, and this handle is permanently revoked. Nothing to repair; `Resume` for a fresh handle if this process should observe or command the attempt.
+- **A command failed with a version mismatch?** A competing handle recorded a transition first. Discard the handle, `Resume` the projection, and observe what won before deciding anything else.
+- **Retirement refused?** Either the retirement policy's witnesses could not attest to serving the exact live cutover (check that the cutover worker is running and converged), the previous version's handler does not implement `projection.Teardowner`, or no policy is recorded — record one with `SetRetirementPolicy`, or authorize the one retirement with `WithRetirementOverride`.
+- **A retirement was interrupted?** The attempt stays in `retiring`. Call `Retire` again: the repair re-attests what the reservation captured and re-runs the idempotent teardown.
+- **Old versions' tables piling up?** Rolled-back and abandoned versions' storage and checkpoints are deliberately left in place — version numbers are never reused, so the residue is inert. Collect it explicitly on your own schedule.
+
 ## Backend-Specific Issues
 
 ### PostgreSQL and SQLite

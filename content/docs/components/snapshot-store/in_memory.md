@@ -1,7 +1,7 @@
 ---
 title: In-Memory Snapshot Store
 type: docs
-prev: docs/components/aggregate_store/
+prev: docs/components/aggregate-store/
 weight: 270
 ---
 

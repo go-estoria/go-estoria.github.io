@@ -28,6 +28,7 @@ Runnable apps with web UIs, showcasing Estoria's event sourcing features and cap
 | [Fleet](https://github.com/go-estoria/estoria-examples/tree/main/fleet) | An IoT sensor-fleet dashboard with an in-process device simulator: long streams, the full snapshotting and caching decorator stack, and a live hydration benchmark. SQLite. | |
 | [Chess](https://github.com/go-estoria/estoria-examples/tree/main/chess) | Two-player chess where each game is an event stream: move legality enforced inside `ApplyTo`, a replay slider, optimistic concurrency as turn-race protection, and PGN export. SQLite. | [chess.demo.estoria.dev](https://chess.demo.estoria.dev) |
 | [Inspector](https://github.com/go-estoria/estoria-examples/tree/main/inspector) | A read-only web tool for browsing any supported event store: stream lists, event paging, payload inspection, and a live global-feed tail. | |
+| [Ledger](https://github.com/go-estoria/estoria-examples/tree/main/ledger) | A bank ledger whose read model is rebuilt live, blue/green, from a web console: versioned projections built alongside the version serving reads, promotion and rollback as recorded cutovers, witnessed retirement, and crash recovery with audited runner takeover. Postgres. | |
 
 ### Concepts
 
@@ -41,5 +42,6 @@ Runnable apps with web UIs, showcasing Estoria's event sourcing features and cap
 | Aggregate caching, and what it's worth | [Cached Aggregate Store](/docs/components/aggregate-store/cached), [Aggregate Cache](/docs/components/aggregate-cache) | [`fleet/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/fleet/main.go), plus the hydration benchmark in [`fleet/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/fleet/server.go) |
 | Projections over a stream | [Projections](/docs/projections) | [`kanban/server.go`](https://github.com/go-estoria/estoria-examples/blob/main/kanban/server.go) (activity feed) |
 | CQRS with a read model | [CQRS](/docs/cqrs) | [`orders/readmodel.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/readmodel.go) |
+| Rebuilding a read model live | [Projection Lifecycle](/docs/projection-lifecycle) | [`ledger/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/ledger/main.go), [`ledger/readmodel.go`](https://github.com/go-estoria/estoria-examples/blob/main/ledger/readmodel.go), [`ledger/serving.go`](https://github.com/go-estoria/estoria-examples/blob/main/ledger/serving.go) |
 | The transactional outbox | [CQRS](/docs/cqrs) | [`orders/main.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/main.go), [`orders/readmodel.go`](https://github.com/go-estoria/estoria-examples/blob/main/orders/readmodel.go) |
 | Reading an event store directly | [Event Store](/docs/components/event-store) | [`inspector/backend.go`](https://github.com/go-estoria/estoria-examples/blob/main/inspector/backend.go) |

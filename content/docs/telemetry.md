@@ -1,7 +1,7 @@
 ---
 title: Telemetry
 type: docs
-prev: docs/projections/
+prev: docs/projection-lifecycle/
 next: docs/cqrs/
 weight: 810
 ---

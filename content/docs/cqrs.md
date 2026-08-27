@@ -106,6 +106,8 @@ If your aggregates are comprised of many events, or if you need more complex que
 
 The [continuous projection processor](../projections#continuous-projections) is built for exactly this: it replays history into the read model from a checkpoint, then tails the event store's global sequence to keep the model current.
 
+When a dedicated read model needs to be rebuilt — a handler bug, a new derived column, a better storage layout — the [projection lifecycle](../projection-lifecycle) rebuilds it as a new version alongside the one still serving reads, with promotion, rollback, and retirement recorded as durable, arbitrated events.
+
 #### The Transactional Outbox
 
 A dedicated read model raises a delivery problem: the append to the event store and the update to the read model are writes to two different systems, and either can succeed while the other fails. The [transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html) pattern closes that gap — each append also writes one outbox row per event *within the same database transaction*, so events and their pending deliveries commit or roll back together. A separate processor then works through the outbox, invoking your handler for each item and retrying on failure, giving at-least-once delivery to read models, webhooks, or message brokers. Handlers must be idempotent.

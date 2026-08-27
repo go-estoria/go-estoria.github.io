@@ -2,7 +2,7 @@
 title: Projections
 type: docs
 prev: docs/components/aggregate-cache/
-next: docs/telemetry/
+next: docs/projection-lifecycle/
 weight: 800
 ---
 
@@ -75,7 +75,7 @@ Events arrive in ascending global order, each carrying a `GlobalPosition`. A rea
 
 A read model that serves queries needs to stay current, not be rebuilt per request. `projection/processor` runs a projection continuously: it replays history from the projection's checkpoint, drains to the head of the global event sequence, then tails it by polling.
 
-A continuous projection is identified by a `projection.ID` — a name plus a 1-based version, rendered canonically as `account_balances_v1`. The ID keys the projection's checkpoint, and its string form is designed to serve as the storage suffix for versioned tables, indexes, or collections, so a new version of a read model can be built alongside the one still serving reads.
+A continuous projection is identified by a `projection.ID` — a name plus a 1-based version, rendered canonically as `account_balances_v1`. The ID keys the projection's checkpoint, and its string form is designed to serve as the storage suffix for versioned tables, indexes, or collections, so a new version of a read model can be built alongside the one still serving reads. The [projection lifecycle](../projection-lifecycle) makes that rebuild a first-class operation: built blue/green, promoted with a recorded cutover, and rolled back or retired the same way.
 
 Progress persists through the `checkpointstore.Store` interface — `Load`, `Save`, and `Delete` of a global position per projection ID. The `checkpointstore/memory` store suits tests and single-process tools; for durable deployments, implement the interface over the database your read model lives in. The `checkpointstore/storetest` suite verifies an implementation against the contract.
 

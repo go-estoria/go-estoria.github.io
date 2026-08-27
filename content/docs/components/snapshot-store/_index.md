@@ -2,7 +2,7 @@
 title: Snapshot Store
 type: docs
 prev: docs/getting-started/
-next: docs/components/aggregate_store
+next: docs/components/aggregate-store
 sidebar:
   open: false
 weight: 260
