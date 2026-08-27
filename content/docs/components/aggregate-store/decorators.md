@@ -52,10 +52,19 @@ func (s tracingStore) Save(ctx context.Context, aggregate *aggregatestore.Aggreg
 
 ## The Save-Outcome Contract
 
-An error from `Save` that carries `aggregatestore.ErrEventsAppended` means the events were durably appended before the failure — persisted state moved ahead of the in-memory aggregate, and the caller recovers by reloading, never by retrying the save. Callers, including Estoria's own components, classify save failures with `errors.Is`, so every decorator in the stack must preserve that classification:
+Estoria classifies every save failure by what reached the stream. An error from `Save` resolves, via `aggregatestore.SaveOutcome`, to one of three outcomes:
 
-- Return the inner `Save` error unchanged, or wrap it with `%w`, so `errors.Is` still finds the marker.
-- Don't fail after a successful inner save (the observer rule above). A decorator that genuinely can fail after the events are durable must return an error wrapping `ErrEventsAppended`, because that is now the truth of the save.
+- **`AppendOutcomeAppended`** — the error carries `aggregatestore.ErrEventsAppended`: the events were durably appended before the failure, persisted state moved ahead of the in-memory aggregate, and the caller recovers by reloading, never by retrying the save.
+- **`AppendOutcomeNothingAppended`** — it carries `aggregatestore.ErrNoEventsAppended`: this save wrote nothing.
+- **`AppendOutcomeUnknown`** — it carries neither: a store can commit and lose its response, and only reading the stream resolves what happened.
+
+Resolve outcomes with `SaveOutcome` rather than `errors.Is`: a wrapped cause can carry the opposite marker from the error that wraps it, and `errors.Is` searches the whole tree, so it can confirm both sentinels on the same error.
+
+Every decorator in the stack must preserve that classification:
+
+- Return the inner `Save` error unchanged, or wrap it with `%w`, so the markers survive.
+- Mark the errors you originate: a failure raised before delegating inward appended nothing — wrap `ErrNoEventsAppended`; a failure raised after a successful inner save follows facts already in the stream — wrap `ErrEventsAppended`.
+- Don't fail after a successful inner save for a side effect's sake (the observer rule above); a decorator that genuinely can fail there must carry `ErrEventsAppended`, because that is now the truth of the save.
 
 ## Side Effects That Must Not Be Lost
 
