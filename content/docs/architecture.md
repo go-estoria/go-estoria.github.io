@@ -31,7 +31,7 @@ Estoria maps event sourcing concepts onto a small set of Go types:
 │                                                          │
 │   optional decorators, stackable in any order:           │
 │   ┌────────────┐  ┌────────────┐  ┌────────────┐         │
-│   │Snapshotting│  │   Cached   │  │  Hookable  │         │
+│   │Snapshotting│  │   Cached   │  │ App-owned  │         │
 │   └────────────┘  └────────────┘  └────────────┘         │
 │                                                          │
 │   core implementation:                                   │
@@ -71,7 +71,7 @@ With decorators in the stack: a snapshotting store first loads the latest snapsh
 2. `store.Save(ctx, aggregate, nil)` encodes each queued event with the `DomainEventCodec` and calls `eventStore.AppendStream(...)`, which enforces optimistic concurrency against the aggregate's loaded version.
 3. `AppendStream` returns the written events exactly as a subsequent read would — store-assigned IDs, versions, timestamps, and global positions — and the store applies them to the in-memory state.
 
-With decorators: a snapshotting store consults its policy after the save and captures a snapshot when due; a hookable store runs `BeforeSave`/`AfterSave` hooks; a cached store refreshes its entry.
+With decorators: a snapshotting store consults its policy after the save and captures a snapshot when due; a cached store refreshes its entry.
 
 ## Ownership Rules
 
@@ -87,7 +87,6 @@ Decorators wrap any `aggregatestore.Store[S]` and can be stacked:
 
 - **[Snapshotting](../components/aggregate-store/snapshotting)** — loads state from snapshots instead of full replay; captures snapshots per a `SnapshotPolicy`.
 - **[Cached](../components/aggregate-store/cached)** — serves loads from an `AggregateCache[S]` backend, falling back to the inner store on a miss.
-- **[Hookable](../components/aggregate-store/hookable)** — runs lifecycle hooks (`BeforeLoad`, `AfterSave`, …) around the inner store's operations.
 
 ```go
 store, _ := aggregatestore.New(eventStore, "account", NewAccount,
@@ -96,8 +95,9 @@ store, _ := aggregatestore.New(eventStore, "account", NewAccount,
 cached, _ := aggregatestore.NewCachedStore(store, cache)
 snapshotting, _ := aggregatestore.NewSnapshottingStore(cached, snapshotStore,
     snapshotstore.EventCountSnapshotPolicy{N: 100})
-hookable, _ := aggregatestore.NewHookableStore(snapshotting)
 ```
+
+Application-owned behavior — reacting to saves, injecting ambient metadata — composes the same way: [write a small decorator](../components/aggregate-store/decorators) over any store in the stack.
 
 ## Extension Points
 

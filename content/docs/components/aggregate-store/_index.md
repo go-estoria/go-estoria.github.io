@@ -32,9 +32,9 @@ The [snapshotting aggregate store](./snapshotting) wraps an underlying aggregate
 
 The [cached aggregate store](./cached) wraps an underlying aggregate store and provides caching for aggregates. Caching reduces the need to load aggregates from persistence on every operation.
 
-### Lifecycle Hooks
+### Custom Decorators
 
-The [hookable aggregate store](./hookable) wraps an underlying aggregate store and provides the ability to inject lifecycle hooks that are called before and after aggregates are loaded and saved.
+Application-owned behavior — reacting to saves, injecting ambient metadata — composes the same way, by [writing your own decorator](./decorators) over any of the stores above.
 
 ### Wrapping Aggregate Stores
 
@@ -50,4 +50,4 @@ type Store[S any] interface {
 }
 ```
 
-Aggregate construction belongs exclusively to the `aggregatestore` package, so from-scratch third-party implementations of this interface are not supported. To extend aggregate store behavior, wrap an existing store — the snapshotting, cached, and hookable stores above are all examples of this pattern, delegating to an inner store and adding behavior around it. The pluggable surfaces are the event store, the snapshot store, and the aggregate cache.
+Aggregate construction belongs exclusively to the `aggregatestore` package, so from-scratch third-party implementations of this interface are not supported. To extend aggregate store behavior, wrap an existing store — the snapshotting and cached stores above are both examples of this pattern, delegating to an inner store and adding behavior around it, and [custom decorators](./decorators) apply it to application-owned behavior. The pluggable surfaces are the event store, the snapshot store, and the aggregate cache.
