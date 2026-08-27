@@ -34,7 +34,7 @@ newUser.AppendWithMetadata(map[string]string{"request_id": requestID},
 )
 ```
 
-To amend all of an aggregate's pending events at once — the natural fit for ambient context like correlation or trace IDs, typically injected from a `BeforeSave` hook — use `MergeEventMetadata`:
+To amend all of an aggregate's pending events at once — the natural fit for ambient context like correlation or trace IDs, typically injected by a [store decorator](/docs/components/aggregate-store/decorators) before it delegates the save — use `MergeEventMetadata`:
 
 ```go
 newUser.MergeEventMetadata(map[string]string{"correlation_id": correlationID})
