@@ -4,6 +4,7 @@ title: Component Library
 
 Estoria orchestrates the lifecycle of aggregates, but it relies on a set of vendor-specific components to provide the underlying storage features. These components include:
 - [Event Stores](#event-stores), for storing events.
+- [Checkpoint Stores](#checkpoint-stores), for persisting projection progress.
 - [Snapshot Stores](#snapshot-stores), for storing snapshots of aggregate state.
 - [Aggregate Caches](#aggregate-caches), for caching aggregate state in memory or in a distributed cache.
 
@@ -21,6 +22,16 @@ These components are maintained by the Estoria project. They are tested against 
 | **[SQLite](https://github.com/go-estoria/estoria-contrib/tree/main/sqlite/eventstore)** | [modernc.org/sqlite](https://gitlab.com/cznic/sqlite) | Yes | Yes | — | Uses a single table for all events; no CGO required. |
 
 **Global Reads** and **Stream Deletion** are the event store's [optional capabilities](/docs/components/event-store#optional-capabilities). KurrentDB's "No" for stream deletion is deliberate: its native delete semantics cannot honestly satisfy the interface's contract, so the store does not claim it (the rationale is in [its README](https://github.com/go-estoria/estoria-contrib/tree/main/kurrentdb/eventstore#unsupported-streamdeleter)). **Outbox** links to the store's companion [transactional outbox](/docs/cqrs#the-transactional-outbox) package, where one exists.
+
+### Checkpoint Stores
+
+Checkpoint stores persist [projection progress](/docs/projections#continuous-projections) — the global position a projection has processed through, keyed by versioned projection ID.
+
+| Checkpoint Store | Driver | Details |
+|------------------|--------|---------|
+| **[MongoDB](https://github.com/go-estoria/estoria-contrib/tree/main/mongodb/checkpointstore)** | [mongo-go-driver](https://github.com/mongodb/mongo-go-driver) | One document per projection; reads pinned to the primary, writes must be acknowledged. |
+| **[PostgreSQL](https://github.com/go-estoria/estoria-contrib/tree/main/postgres/checkpointstore)** | [pgx](https://github.com/jackc/pgx) | A single table, one row per projection. |
+| **[SQLite](https://github.com/go-estoria/estoria-contrib/tree/main/sqlite/checkpointstore)** | [modernc.org/sqlite](https://gitlab.com/cznic/sqlite) | A single table, one row per projection; no CGO required. |
 
 ### Snapshot Stores
 

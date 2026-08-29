@@ -107,11 +107,11 @@ Vendor-specific implementations live in [estoria-contrib](https://github.com/go-
 - **Snapshot stores** implement `snapshotstore.SnapshotStore`. Both current implementations are in core: `snapshotstore/memory` and `snapshotstore/eventstream` (snapshots stored as events).
 - **Aggregate caches** implement `aggregatestore.AggregateCache[S]`: Redis, Valkey, Freecache, BigCache.
 - **Transactional outboxes** ride the PostgreSQL and MongoDB event stores' transaction hooks for [reliable delivery](../cqrs#the-transactional-outbox) to external consumers.
-- **Checkpoint stores** implement `checkpointstore.Store`, persisting [projection progress](../projections#continuous-projections). Core ships `checkpointstore/memory`; durable deployments implement the interface over the database the read model lives in, verified by the `checkpointstore/storetest` suite.
+- **Checkpoint stores** implement `checkpointstore.Store`, persisting [projection progress](../projections#continuous-projections): PostgreSQL, SQLite, MongoDB. Core ships `checkpointstore/memory`; custom implementations over the read model's own database are verified by the `checkpointstore/storetest` suite.
 - **Cutover setters and routers** implement `lifecycle.CutoverSetter` and `lifecycle.Router`, converging read routing on [recorded promotions and rollbacks](../projection-lifecycle#cutover).
 - **Telemetry wrappers** ([OpenTelemetry, Datadog](../telemetry)) instrument event, aggregate, and snapshot stores without changing their behavior.
 
-Acceptance suites in `eventstore/storetest` and `snapshotstore/storetest` verify implementations against the behaviors Estoria's components rely on; every contrib backend runs them in CI.
+Acceptance suites in `eventstore/storetest`, `snapshotstore/storetest`, and `checkpointstore/storetest` verify implementations against the behaviors Estoria's components rely on; every contrib backend runs them in CI.
 
 ## Key Interfaces
 

@@ -145,6 +145,34 @@ go ob.Run(ctx)
 
 The MongoDB outbox additionally guarantees strict per-stream delivery order via per-stream leases; see [its README](https://github.com/go-estoria/estoria-contrib/tree/main/mongodb/outbox) for the delivery contract.
 
+## Checkpoint Stores
+
+The PostgreSQL, SQLite, and MongoDB backends each ship a `checkpointstore` package persisting a [continuous projection's progress](../projections#continuous-projections) durably — what a production processor or the [projection lifecycle](../projection-lifecycle) needs beyond core's in-memory checkpoint store.
+
+```go
+import pgcheckpointstore "github.com/go-estoria/estoria-contrib/postgres/checkpointstore"
+
+checkpoints, err := pgcheckpointstore.New(pool)
+if err != nil { ... }
+
+// The store owns its schema; apply it once at deployment time.
+if _, err := pool.Exec(ctx, checkpoints.Schema()); err != nil { ... }
+
+proc, err := processor.New(eventStore, checkpoints, id, handler)
+```
+
+The SQLite store follows the same shape over `database/sql`. Both SQL stores keep one row per projection in a `projection_checkpoint` table, overridable with `WithTableName`.
+
+The MongoDB store takes a collection directly — give it a name with a leading underscore when it shares a database with a multi-collection event store:
+
+```go
+import mongocheckpointstore "github.com/go-estoria/estoria-contrib/mongodb/checkpointstore"
+
+checkpoints, err := mongocheckpointstore.New(db.Collection("_projection_checkpoints"))
+```
+
+Checkpoint reads are pinned to the replica set primary regardless of the collection's read preference — a checkpoint may legitimately rewind, and a lagging secondary serving the pre-rewind position would skip events — and saves and deletes require an acknowledged write concern.
+
 ## Aggregate Caches
 
 Four cache backends implement `aggregatestore.AggregateCache[S]`: [Redis](https://github.com/go-estoria/estoria-contrib/tree/main/redis/aggregatecache) and [Valkey](https://github.com/go-estoria/estoria-contrib/tree/main/valkey/aggregatecache) (distributed), [Freecache](https://github.com/go-estoria/estoria-contrib/tree/main/freecache/aggregatecache) and [BigCache](https://github.com/go-estoria/estoria-contrib/tree/main/bigcache/aggregatecache) (in-process). All follow the same pattern:
