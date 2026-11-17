@@ -92,6 +92,8 @@ func (c Codec[S]) UnmarshalState(data []byte, dest *S) error {
 
 - **Snapshots never being taken?** Check the policy: `snapshotstore.EventCountSnapshotPolicy{N: 100}` captures every 100 events, and the policy is consulted only after a successful save.
 - **Snapshots being skipped on load?** A snapshot declaring a content type the store's `StateCodec` does not produce is skipped in favor of event replay — expected after changing codecs; the next save writes a fresh snapshot.
+- **Saves and loads succeed, but no snapshots appear?** The snapshotting store logs failed snapshot reads and writes instead of returning them, so a broken snapshot store only shows up as slower loads and errors in the logs. With the PostgreSQL snapshot store, the usual cause is a schema that was never applied (`relation "aggregate_snapshot" does not exist`). Another is a `WithTableName` naming a table that already exists, such as `event` or `outbox`: `Schema()` creates its table only if none exists by that name, so every snapshot write then fails against the other table.
+- **A deleted aggregate still loads?** Deleting an event stream leaves the aggregate's snapshots behind, and loads start from them. Delete the snapshots before the stream: the [PostgreSQL snapshot store](../integrations#snapshot-stores) needs a `DELETE` of the aggregate's rows, and the eventstream store a `DeleteStream` of its companion snapshot stream.
 - **The eventstream snapshot store** persists snapshots in a companion stream named by suffixing the aggregate's type: aggregate `account_<uuid>` snapshots to stream `accountsnapshot_<uuid>`. Old snapshots can be pruned automatically with `WithMaxSnapshots`.
 
 ## Projection Lifecycle Issues

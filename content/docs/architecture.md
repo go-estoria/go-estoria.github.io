@@ -104,7 +104,7 @@ Application-owned behavior — reacting to saves, injecting ambient metadata —
 Vendor-specific implementations live in [estoria-contrib](https://github.com/go-estoria/estoria-contrib); the [Component Library](/component-library) catalogs them.
 
 - **Event stores** implement `eventstore.Store`: PostgreSQL, SQLite, MongoDB, KurrentDB. The core library ships an in-memory store for testing. Optional capabilities — [global reads and stream deletion](../components/event-store#optional-capabilities) — are discovered by type assertion.
-- **Snapshot stores** implement `snapshotstore.SnapshotStore`. Both current implementations are in core: `snapshotstore/memory` and `snapshotstore/eventstream` (snapshots stored as events).
+- **Snapshot stores** implement `snapshotstore.SnapshotStore`: PostgreSQL. Core ships `snapshotstore/memory` and `snapshotstore/eventstream` (snapshots stored as events).
 - **Aggregate caches** implement `aggregatestore.AggregateCache[S]`: Redis, Valkey, Freecache, BigCache.
 - **Transactional outboxes** ride the PostgreSQL and MongoDB event stores' transaction hooks for [reliable delivery](../cqrs#the-transactional-outbox) to external consumers.
 - **Checkpoint stores** implement `checkpointstore.Store`, persisting [projection progress](../projections#continuous-projections): PostgreSQL, SQLite, MongoDB. Core ships `checkpointstore/memory`; custom implementations over the read model's own database are verified by the `checkpointstore/storetest` suite.

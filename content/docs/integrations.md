@@ -173,6 +173,39 @@ checkpoints, err := mongocheckpointstore.New(db.Collection("_projection_checkpoi
 
 Checkpoint reads are pinned to the replica set primary regardless of the collection's read preference — a checkpoint may legitimately rewind, and a lagging secondary serving the pre-rewind position would skip events — and saves and deletes require an acknowledged write concern.
 
+## Snapshot Stores
+
+The PostgreSQL backend ships a `snapshotstore` package that keeps [snapshots](../components/snapshot-store) in a table of their own, for the [snapshotting aggregate store](../components/aggregate-store/snapshotting) to load from.
+
+```go
+import pgsnapshotstore "github.com/go-estoria/estoria-contrib/postgres/snapshotstore"
+
+snapshots, err := pgsnapshotstore.New(pool, pgsnapshotstore.WithMaxSnapshots(3))
+if err != nil { ... }
+
+// The store owns its schema; apply it once at deployment time.
+if _, err := pool.Exec(ctx, snapshots.Schema()); err != nil { ... }
+
+snapshotting, err := aggregatestore.NewSnapshottingStore(store, snapshots,
+    snapshotstore.EventCountSnapshotPolicy{N: 100})
+```
+
+Snapshots live in an `aggregate_snapshot` table, overridable with `WithTableName`, one row per retained snapshot. Payloads are stored as `bytea` and returned byte for byte, so any state codec works, binary ones included. Snapshot timestamps come from the database clock unless the writer supplies one.
+
+**Retention.** Without `WithMaxSnapshots`, every snapshot is kept: the table grows by a full copy of an aggregate's state each time the snapshot policy fires. `WithMaxSnapshots(n)` keeps the newest `n` per aggregate, pruning after each write; a pruning failure is logged and never fails the write. Keeping more than one lets a load to an earlier version (`LoadOptions.ToVersion`) start from an older snapshot instead of replaying the stream from its start.
+
+**Deleting an aggregate.** Deleting an aggregate's event stream does not delete its snapshots, and an aggregate whose stream is fully deleted keeps loading from them. If its ID is later reused, loads return the old state and saves fail with a version mismatch until the snapshots are removed. Delete the snapshots first, then the stream:
+
+```sql
+DELETE FROM aggregate_snapshot WHERE aggregate_type = $1 AND aggregate_id = $2;
+```
+
+In that order, a failure between the two leaves a stream without snapshots, which simply replays in full. A save already in progress on the aggregate can still write a snapshot after the `DELETE`, because snapshots are written after the save's events commit, so delete aggregates nothing is still writing to.
+
+**Truncated streams.** After `DeleteStream` with `ToVersion`, the earlier events are gone and loading has to start from a snapshot, so the snapshots are no longer a disposable cache: don't clear them. Truncate only up to a version that has a snapshot. Loads to past versions are then only reliable back to the oldest snapshot retained at or after the truncation point.
+
+The core [event stream snapshot store](../components/snapshot-store/event_stream) also runs over the PostgreSQL event store, with limits listed on its page.
+
 ## Aggregate Caches
 
 Four cache backends implement `aggregatestore.AggregateCache[S]`: [Redis](https://github.com/go-estoria/estoria-contrib/tree/main/redis/aggregatecache) and [Valkey](https://github.com/go-estoria/estoria-contrib/tree/main/valkey/aggregatecache) (distributed), [Freecache](https://github.com/go-estoria/estoria-contrib/tree/main/freecache/aggregatecache) and [BigCache](https://github.com/go-estoria/estoria-contrib/tree/main/bigcache/aggregatecache) (in-process). All follow the same pattern:

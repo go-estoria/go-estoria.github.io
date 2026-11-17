@@ -38,14 +38,14 @@ func main() {
 
 ## Snapshot Stores
 
-While the snapshotting aggregate store is a core Estoria component, it relies on an snapshot store implementation to provide the actual snapshotting functionality. See [Snapshot Store Implementations](../../../component-library/#snapshot-store-implementations) in the component library for more information on available snapshot store implementations.
+While the snapshotting aggregate store is a core Estoria component, it relies on a snapshot store implementation to provide the actual snapshotting functionality. See [Snapshot Store Implementations](/component-library/#snapshot-stores) in the component library for more information on available snapshot store implementations.
 
 ## Components
 
 The snapshotting aggregate store relies on the following components:
 
 - **An underlying aggregate store.** Because the snapshotting aggregate store can only hydrate aggregates to specific versions (those for which there are snapshots available), it must defer to another aggregate store to completely hydrate an aggregate to its latest version if events have been appended since the most recent snapshot.
-- **A snapshot store.** The snapshotting aggregate store needs to know how to save and load snapshots, and for this it uses a [snapshot store](../snapshot_store/).
+- **A snapshot store.** The snapshotting aggregate store needs to know how to save and load snapshots, and for this it uses a [snapshot store](/docs/components/snapshot-store/).
 - **A snapshot policy.** The snapshot policy determines when a snapshot should be captured and saved. For example, a common policy is to capture a snapshot every N events.
 - **A state codec.** By default, snapshot state is marshaled as JSON, but this can be changed via an initialization option.
 

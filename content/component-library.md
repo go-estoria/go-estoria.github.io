@@ -35,10 +35,11 @@ Checkpoint stores persist [projection progress](/docs/projections#continuous-pro
 
 ### Snapshot Stores
 
-Coming soon.
+Snapshot stores persist [snapshots](/docs/components/snapshot-store/) of aggregate state, which the [snapshotting aggregate store](/docs/components/aggregate-store/snapshotting/) loads from instead of replaying a stream from its start. Core also ships an in-memory store and an [event stream store](/docs/components/snapshot-store/event_stream/) that keeps snapshots as events.
 
-| Backend | Driver |
-|---------|--------|
+| Snapshot Store | Driver | Details |
+|----------------|--------|---------|
+| **[PostgreSQL](https://github.com/go-estoria/estoria-contrib/tree/main/postgres/snapshotstore)** | [pgx](https://github.com/jackc/pgx) | A single table, one row per retained snapshot; payloads stored byte for byte. |
 
 ### Aggregate Caches
 
